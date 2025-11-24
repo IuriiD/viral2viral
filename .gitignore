@@ -1,0 +1,6 @@
+.github/
+node_modules/
+.specify/scripts/
+.specify/templates/
+.env
+.vscode
