@@ -4,3 +4,4 @@ node_modules/
 .specify/templates/
 .env
 .vscode
+scripts/landing-page/
