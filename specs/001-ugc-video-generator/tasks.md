@@ -74,35 +74,35 @@
 
 ### Backend Implementation for User Story 1
 
-- [ ] T028 [P] [US1] Create VideoModule in backend/src/modules/video/video.module.ts
-- [ ] T029 [P] [US1] Create AnalysisModule in backend/src/modules/analysis/analysis.module.ts
-- [ ] T030 [P] [US1] Create UploadVideoRequestDto with validation in backend/src/modules/video/dto/upload-video-request.dto.ts
-- [ ] T031 [P] [US1] Create UploadVideoResponseDto in backend/src/modules/video/dto/upload-video-response.dto.ts
-- [ ] T032 [P] [US1] Create TriggerAnalysisResponseDto in backend/src/modules/analysis/dto/trigger-analysis-response.dto.ts
-- [ ] T033 [P] [US1] Create GetAnalysisResponseDto in backend/src/modules/analysis/dto/get-analysis-response.dto.ts
-- [ ] T034 [P] [US1] Create UpdateAnalysisRequestDto with validation in backend/src/modules/analysis/dto/update-analysis-request.dto.ts
-- [ ] T035 [US1] Create VideoService with generateUploadUrl method in backend/src/modules/video/video.service.ts
-- [ ] T036 [US1] Create AnalysisService with analyzeVideo method using Google Gemini in backend/src/modules/analysis/analysis.service.ts
-- [ ] T037 [US1] Implement getAnalysisStatus and updateAnalysis methods in backend/src/modules/analysis/analysis.service.ts
-- [ ] T038 [US1] Create VideoController with POST /sessions/:sessionId/video/upload-url endpoint in backend/src/modules/video/video.controller.ts
-- [ ] T039 [US1] Create AnalysisController with POST /sessions/:sessionId/analysis endpoint in backend/src/modules/analysis/analysis.controller.ts
-- [ ] T040 [US1] Add GET /sessions/:sessionId/analysis endpoint to AnalysisController in backend/src/modules/analysis/analysis.controller.ts
-- [ ] T041 [US1] Add PATCH /sessions/:sessionId/analysis endpoint to AnalysisController in backend/src/modules/analysis/analysis.controller.ts
-- [ ] T042 [US1] Add session state transitions for video_uploaded and analyzing in backend/src/common/session.service.ts
+- [X] T028 [P] [US1] Create VideoModule in backend/src/modules/video/video.module.ts
+- [X] T029 [P] [US1] Create AnalysisModule in backend/src/modules/analysis/analysis.module.ts
+- [X] T030 [P] [US1] Create UploadVideoRequestDto with validation in backend/src/modules/video/dto/upload-video-request.dto.ts
+- [X] T031 [P] [US1] Create UploadVideoResponseDto in backend/src/modules/video/dto/upload-video-response.dto.ts
+- [X] T032 [P] [US1] Create TriggerAnalysisResponseDto in backend/src/modules/analysis/dto/trigger-analysis-response.dto.ts
+- [X] T033 [P] [US1] Create GetAnalysisResponseDto in backend/src/modules/analysis/dto/get-analysis-response.dto.ts
+- [X] T034 [P] [US1] Create UpdateAnalysisRequestDto with validation in backend/src/modules/analysis/dto/update-analysis-request.dto.ts
+- [X] T035 [US1] Create VideoService with generateUploadUrl method in backend/src/modules/video/video.service.ts
+- [X] T036 [US1] Create AnalysisService with analyzeVideo method using Google Gemini in backend/src/modules/analysis/analysis.service.ts
+- [X] T037 [US1] Implement getAnalysisStatus and updateAnalysis methods in backend/src/modules/analysis/analysis.service.ts
+- [X] T038 [US1] Create VideoController with POST /sessions/:sessionId/video/upload-url endpoint in backend/src/modules/video/video.controller.ts
+- [X] T039 [US1] Create AnalysisController with POST /sessions/:sessionId/analysis endpoint in backend/src/modules/analysis/analysis.controller.ts
+- [X] T040 [US1] Add GET /sessions/:sessionId/analysis endpoint to AnalysisController in backend/src/modules/analysis/analysis.controller.ts
+- [X] T041 [US1] Add PATCH /sessions/:sessionId/analysis endpoint to AnalysisController in backend/src/modules/analysis/analysis.controller.ts
+- [X] T042 [US1] Add session state transitions for video_uploaded and analyzing in backend/src/common/session.service.ts
 
 ### Frontend Implementation for User Story 1
 
-- [ ] T043 [P] [US1] Create VideoUpload component with file input and progress bar in frontend/src/components/VideoUpload.tsx
-- [ ] T044 [P] [US1] Create AnalysisDisplay component with editable text area in frontend/src/components/AnalysisDisplay.tsx
-- [ ] T045 [P] [US1] Create ProgressIndicator component for loading states in frontend/src/components/ProgressIndicator.tsx
-- [ ] T046 [US1] Add uploadVideo API method in frontend/src/services/api.ts
-- [ ] T047 [US1] Add triggerAnalysis API method in frontend/src/services/api.ts
-- [ ] T048 [US1] Add getAnalysisStatus API method with polling in frontend/src/services/api.ts
-- [ ] T049 [US1] Add updateAnalysis API method in frontend/src/services/api.ts
-- [ ] T050 [US1] Create useWorkflow custom hook managing video upload state in frontend/src/hooks/useWorkflow.ts
-- [ ] T051 [US1] Add analysis state management to useWorkflow hook in frontend/src/hooks/useWorkflow.ts
-- [ ] T052 [US1] Integrate VideoUpload and AnalysisDisplay components into App.tsx in frontend/src/App.tsx
-- [ ] T053 [US1] Add error handling and user-facing error messages for video and analysis operations in frontend/src/App.tsx
+- [X] T043 [P] [US1] Create VideoUpload component with file input and progress bar in frontend/src/components/VideoUpload.tsx
+- [X] T044 [P] [US1] Create AnalysisDisplay component with editable text area in frontend/src/components/AnalysisDisplay.tsx
+- [X] T045 [P] [US1] Create ProgressIndicator component for loading states in frontend/src/components/ProgressIndicator.tsx
+- [X] T046 [US1] Add uploadVideo API method in frontend/src/services/api.ts
+- [X] T047 [US1] Add triggerAnalysis API method in frontend/src/services/api.ts
+- [X] T048 [US1] Add getAnalysisStatus API method with polling in frontend/src/services/api.ts
+- [X] T049 [US1] Add updateAnalysis API method in frontend/src/services/api.ts
+- [X] T050 [US1] Create useWorkflow custom hook managing video upload state in frontend/src/hooks/useWorkflow.ts
+- [X] T051 [US1] Add analysis state management to useWorkflow hook in frontend/src/hooks/useWorkflow.ts
+- [X] T052 [US1] Integrate VideoUpload and AnalysisDisplay components into App.tsx in frontend/src/App.tsx
+- [X] T053 [US1] Add error handling and user-facing error messages for video and analysis operations in frontend/src/App.tsx
 
 **Checkpoint**: At this point, User Story 1 should be fully functional - users can upload videos, analyze them, and edit results
 

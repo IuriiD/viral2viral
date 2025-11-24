@@ -54,8 +54,9 @@ export const loadConfiguration = (): Configuration => {
     },
 
     gemini: {
-      apiKey: process.env.GEMINI_API_KEY || '',
-      model: process.env.GEMINI_MODEL || 'gemini-2.0-flash-exp',
+      apiKey:
+        process.env.GEMINI_API_KEY || process.env.GOOGLE_GEMINI_API_KEY || '',
+      model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
     },
 
     openai: {
@@ -73,6 +74,7 @@ export const loadConfiguration = (): Configuration => {
 
 /**
  * Validate that required configuration values are present
+ * For Phase 3 (User Story 1), only AWS and Gemini are required
  * @throws Error if required values are missing
  */
 export const validateConfiguration = (config: Configuration): void => {
@@ -81,8 +83,11 @@ export const validateConfiguration = (config: Configuration): void => {
     { key: 'AWS_ACCESS_KEY_ID', value: config.aws.accessKeyId },
     { key: 'AWS_SECRET_ACCESS_KEY', value: config.aws.secretAccessKey },
     { key: 'AWS_S3_BUCKET', value: config.aws.s3Bucket },
-    { key: 'GEMINI_API_KEY', value: config.gemini.apiKey },
-    { key: 'OPENAI_API_KEY', value: config.openai.apiKey },
+    {
+      key: 'GEMINI_API_KEY or GOOGLE_GEMINI_API_KEY',
+      value: config.gemini.apiKey,
+    },
+    // OPENAI_API_KEY is optional for now (needed in later phases)
   ];
 
   const missingFields = requiredFields

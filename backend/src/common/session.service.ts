@@ -5,7 +5,7 @@
  * Holds all workflow state without database persistence (POC requirement).
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { Session, SessionStatus } from './types/session.types';
 
@@ -13,13 +13,22 @@ import { Session, SessionStatus } from './types/session.types';
  * SessionService manages in-memory session state for all workflows
  * Singleton provider with application scope
  */
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class SessionService {
+  /** Instance counter for debugging */
+  private static instanceCounter = 0;
+  private readonly instanceId: number;
+
   /** In-memory session storage */
   private readonly sessions: Map<string, Session> = new Map();
 
   /** Session TTL in milliseconds (24 hours) */
   private readonly SESSION_TTL = 24 * 60 * 60 * 1000;
+
+  constructor() {
+    this.instanceId = ++SessionService.instanceCounter;
+    console.log(`[SessionService] Instance #${this.instanceId} created`);
+  }
 
   /**
    * Create a new session
@@ -37,6 +46,9 @@ export class SessionService {
     };
 
     this.sessions.set(sessionId, session);
+    console.log(
+      `[SessionService #${this.instanceId}] Created session ${sessionId}, total sessions: ${this.sessions.size}`,
+    );
     return session;
   }
 
@@ -46,7 +58,11 @@ export class SessionService {
    * @returns Session or undefined if not found
    */
   getSession(sessionId: string): Session | undefined {
-    return this.sessions.get(sessionId);
+    const session = this.sessions.get(sessionId);
+    console.log(
+      `[SessionService #${this.instanceId}] Getting session ${sessionId}, found: ${!!session}, total sessions: ${this.sessions.size}`,
+    );
+    return session;
   }
 
   /**

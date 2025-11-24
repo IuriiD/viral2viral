@@ -116,3 +116,168 @@ class ApiClient {
 
 // Export singleton instance
 export const api = new ApiClient();
+
+// ============================================================================
+// Session API Methods
+// ============================================================================
+
+export interface Session {
+  sessionId: string;
+  createdAt: string;
+  lastActivityAt: string;
+  status: string;
+}
+
+/**
+ * Create a new session
+ */
+export async function createSession(): Promise<Session> {
+  const response = await api.post<{ sessionId: string; session: Session }>(
+    '/sessions'
+  );
+
+  if (!response.data) {
+    throw new Error('Failed to create session');
+  }
+
+  // Handle double-wrapped response
+  const data =
+    'data' in response.data && typeof response.data.data === 'object'
+      ? (response.data.data as { sessionId: string; session: Session })
+      : response.data;
+
+  return data.session;
+}
+
+// ============================================================================
+// Video API Methods
+// ============================================================================
+
+export interface UploadVideoRequest {
+  fileName: string;
+  fileSize: number;
+  mimeType: string;
+}
+
+export interface UploadVideoResponse {
+  uploadUrl: string;
+  uploadFields: Record<string, string>;
+  s3Key: string;
+}
+
+/**
+ * Upload video file to backend (which proxies to S3)
+ */
+export async function uploadVideo(
+  sessionId: string,
+  file: File,
+  onProgress?: (progress: number) => void
+): Promise<void> {
+  const formData = new FormData();
+  formData.append('video', file);
+
+  await axios.post(
+    `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api'}/sessions/${sessionId}/video/upload`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (progressEvent) => {
+        if (onProgress && progressEvent.total) {
+          const progress = (progressEvent.loaded / progressEvent.total) * 100;
+          onProgress(Math.round(progress));
+        }
+      },
+    }
+  );
+}
+
+// ============================================================================
+// Analysis API Methods
+// ============================================================================
+
+export interface VideoAnalysis {
+  analysisId: string;
+  analyzedAt: string;
+  status: 'pending' | 'processing' | 'complete' | 'failed';
+  sceneBreakdown: string;
+  userEdits?: string;
+  error?: {
+    code: string;
+    message: string;
+    timestamp: string;
+  };
+}
+
+/**
+ * Trigger video analysis
+ */
+export async function triggerAnalysis(
+  sessionId: string
+): Promise<{ analysisId: string; status: string }> {
+  const response = await api.post<{ analysisId: string; status: string }>(
+    `/sessions/${sessionId}/analysis`
+  );
+
+  if (!response.data) {
+    throw new Error('Failed to trigger analysis');
+  }
+
+  // Handle double-wrapped response
+  const data =
+    'data' in response.data && typeof response.data.data === 'object'
+      ? (response.data.data as { analysisId: string; status: string })
+      : response.data;
+
+  return data;
+}
+
+/**
+ * Get analysis status and results (for polling)
+ */
+export async function getAnalysisStatus(
+  sessionId: string
+): Promise<VideoAnalysis> {
+  const response = await api.get<VideoAnalysis>(
+    `/sessions/${sessionId}/analysis`
+  );
+
+  if (!response.data) {
+    throw new Error('Failed to get analysis status');
+  }
+
+  // Handle double-wrapped response
+  const data =
+    'data' in response.data && typeof response.data.data === 'object'
+      ? (response.data.data as VideoAnalysis)
+      : response.data;
+
+  return data;
+}
+
+/**
+ * Update analysis with user edits
+ */
+export async function updateAnalysis(
+  sessionId: string,
+  editedText: string
+): Promise<VideoAnalysis> {
+  const response = await api.patch<VideoAnalysis>(
+    `/sessions/${sessionId}/analysis`,
+    { editedText }
+  );
+
+  if (!response.data) {
+    throw new Error('Failed to update analysis');
+  }
+
+  // Handle double-wrapped response
+  const data =
+    'data' in response.data && typeof response.data.data === 'object'
+      ? (response.data.data as VideoAnalysis)
+      : response.data;
+
+  return data;
+}
+

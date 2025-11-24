@@ -4,6 +4,10 @@
  * Initializes NestJS application with global filters, interceptors, and CORS.
  */
 
+// Load environment variables FIRST before anything else
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';

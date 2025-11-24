@@ -4,12 +4,16 @@
  * Root application module that imports all feature modules.
  */
 
-import { Module } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
 import { StorageModule } from './modules/storage/storage.module';
+import { VideoModule } from './modules/video/video.module';
+import { AnalysisModule } from './modules/analysis/analysis.module';
+import { SessionsModule } from './modules/sessions/sessions.module';
 import { SessionService } from './common/session.service';
 
+@Global()
 @Module({
-  imports: [StorageModule],
+  imports: [StorageModule, VideoModule, AnalysisModule, SessionsModule],
   providers: [SessionService],
   exports: [SessionService],
 })
