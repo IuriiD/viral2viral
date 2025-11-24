@@ -281,3 +281,44 @@ export async function updateAnalysis(
   return data;
 }
 
+// ============================================================================
+// Product API Methods
+// ============================================================================
+
+export interface ProductInformation {
+  productName: string;
+  productDescription: string;
+}
+
+export interface SubmitProductInfoResponse {
+  sessionId: string;
+  productName: string;
+  productDescription: string;
+  status: string;
+}
+
+/**
+ * Submit product information
+ */
+export async function submitProductInfo(
+  sessionId: string,
+  productName: string,
+  productDescription: string
+): Promise<SubmitProductInfoResponse> {
+  const response = await api.post<SubmitProductInfoResponse>(
+    `/sessions/${sessionId}/product`,
+    { productName, productDescription }
+  );
+
+  if (!response.data) {
+    throw new Error('Failed to submit product information');
+  }
+
+  // Handle double-wrapped response
+  const data =
+    'data' in response.data && typeof response.data.data === 'object'
+      ? (response.data.data as SubmitProductInfoResponse)
+      : response.data;
+
+  return data;
+}

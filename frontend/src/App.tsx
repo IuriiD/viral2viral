@@ -8,6 +8,7 @@ import { useWorkflow } from './hooks/useWorkflow';
 import { VideoUpload } from './components/VideoUpload';
 import { AnalysisDisplay } from './components/AnalysisDisplay';
 import { ProgressIndicator } from './components/ProgressIndicator';
+import { ProductInput } from './components/ProductInput';
 
 function App() {
   const {
@@ -16,9 +17,11 @@ function App() {
     isUploading,
     isAnalyzing,
     analysis,
+    isSubmittingProduct,
     error,
     uploadVideo,
     updateAnalysis,
+    submitProductInfo,
     clearError,
   } = useWorkflow();
 
@@ -133,6 +136,16 @@ function App() {
               onSave={() => {
                 /* Move to next step */
               }}
+            />
+          )}
+
+          {/* Step 3: Product Input */}
+          {currentStep === 'product-input' && (
+            <ProductInput
+              onSubmit={(name, description) =>
+                submitProductInfo(name, description)
+              }
+              isSubmitting={isSubmittingProduct}
             />
           )}
 

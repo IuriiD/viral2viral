@@ -5,6 +5,7 @@ import {
   triggerAnalysis,
   getAnalysisStatus,
   updateAnalysis,
+  submitProductInfo,
   VideoAnalysis,
 } from '../services/api';
 
@@ -25,6 +26,9 @@ interface UseWorkflowState {
   uploadProgress: number;
   isAnalyzing: boolean;
   analysis: VideoAnalysis | null;
+  productName: string | null;
+  productDescription: string | null;
+  isSubmittingProduct: boolean;
   error: string | null;
 }
 
@@ -40,6 +44,9 @@ export function useWorkflow() {
     uploadProgress: 0,
     isAnalyzing: false,
     analysis: null,
+    productName: null,
+    productDescription: null,
+    isSubmittingProduct: false,
     error: null,
   });
 
@@ -248,6 +255,7 @@ export function useWorkflow() {
         setState((prev) => ({
           ...prev,
           analysis: updatedAnalysis,
+          currentStep: 'product-input', // Move to next step after saving
         }));
       } catch (error) {
         // Check if it's a session not found error
@@ -281,11 +289,74 @@ export function useWorkflow() {
     }));
   }, []);
 
+  /**
+   * Submit product information
+   */
+  const handleSubmitProductInfo = useCallback(
+    async (productName: string, productDescription: string) => {
+      if (!state.sessionId) {
+        setState((prev) => ({
+          ...prev,
+          error: 'No active session. Please refresh the page.',
+        }));
+        return;
+      }
+
+      setState((prev) => ({
+        ...prev,
+        isSubmittingProduct: true,
+        error: null,
+      }));
+
+      try {
+        await submitProductInfo(
+          state.sessionId,
+          productName,
+          productDescription
+        );
+
+        setState((prev) => ({
+          ...prev,
+          isSubmittingProduct: false,
+          productName,
+          productDescription,
+          currentStep: 'prompt-generation',
+        }));
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : 'Failed to submit product information';
+
+        if (
+          errorMessage.includes('Session not found') ||
+          errorMessage.includes('not found')
+        ) {
+          localStorage.removeItem('sessionId');
+          setState((prev) => ({
+            ...prev,
+            isSubmittingProduct: false,
+            error:
+              'Session expired. Please refresh the page and start over.',
+          }));
+        } else {
+          setState((prev) => ({
+            ...prev,
+            isSubmittingProduct: false,
+            error: errorMessage,
+          }));
+        }
+      }
+    },
+    [state.sessionId]
+  );
+
   return {
     ...state,
     uploadVideo: handleUploadVideo,
     triggerAnalysis: handleTriggerAnalysis,
     updateAnalysis: handleUpdateAnalysis,
+    submitProductInfo: handleSubmitProductInfo,
     clearError,
   };
 }

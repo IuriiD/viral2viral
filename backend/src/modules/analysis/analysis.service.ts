@@ -169,10 +169,7 @@ Respond with a valid JSON with 1 key "sceneBreakdown", without any additional ex
         ],
       });
       console.log('[AnalysisService] Received response from Gemini');
-      console.log(
-        '[AnalysisService] Response:',
-        JSON.stringify(response, null, 2),
-      );
+      console.log('[AnalysisService] Response:', JSON.stringify(response));
 
       let sceneBreakdown = '';
       try {

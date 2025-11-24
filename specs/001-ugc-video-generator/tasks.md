@@ -116,21 +116,21 @@
 
 ### Backend Implementation for User Story 2
 
-- [ ] T054 [P] [US2] Create ProductModule in backend/src/modules/product/product.module.ts
-- [ ] T055 [P] [US2] Create SubmitProductInfoRequestDto with validation (3-100 chars name, 1-250 chars description) in backend/src/modules/product/dto/submit-product-info-request.dto.ts
-- [ ] T056 [P] [US2] Create SubmitProductInfoResponseDto in backend/src/modules/product/dto/submit-product-info-response.dto.ts
-- [ ] T057 [US2] Create ProductService with submitProductInfo method in backend/src/modules/product/product.service.ts
-- [ ] T058 [US2] Create ProductController with POST /sessions/:sessionId/product endpoint in backend/src/modules/product/product.controller.ts
-- [ ] T059 [US2] Add session state transition for product_info_added in backend/src/common/session.service.ts
+- [X] T054 [P] [US2] Create ProductModule in backend/src/modules/product/product.module.ts
+- [X] T055 [P] [US2] Create SubmitProductInfoRequestDto with validation (3-100 chars name, 1-250 chars description) in backend/src/modules/product/dto/submit-product-info-request.dto.ts
+- [X] T056 [P] [US2] Create SubmitProductInfoResponseDto in backend/src/modules/product/dto/submit-product-info-response.dto.ts
+- [X] T057 [US2] Create ProductService with submitProductInfo method in backend/src/modules/product/product.service.ts
+- [X] T058 [US2] Create ProductController with POST /sessions/:sessionId/product endpoint in backend/src/modules/product/product.controller.ts
+- [X] T059 [US2] Add session state transition for product_info_added in backend/src/common/session.service.ts
 
 ### Frontend Implementation for User Story 2
 
-- [ ] T060 [P] [US2] Create ProductInput component with name and description fields in frontend/src/components/ProductInput.tsx
-- [ ] T061 [P] [US2] Add character counters for product name (100 max) and description (250 max) in frontend/src/components/ProductInput.tsx
-- [ ] T062 [US2] Add submitProductInfo API method in frontend/src/services/api.ts
-- [ ] T063 [US2] Add product info state management to useWorkflow hook in frontend/src/hooks/useWorkflow.ts
-- [ ] T064 [US2] Integrate ProductInput component into App.tsx workflow in frontend/src/App.tsx
-- [ ] T065 [US2] Add inline validation messages for product name and description in frontend/src/components/ProductInput.tsx
+- [X] T060 [P] [US2] Create ProductInput component with name and description fields in frontend/src/components/ProductInput.tsx
+- [X] T061 [P] [US2] Add character counters for product name (100 max) and description (250 max) in frontend/src/components/ProductInput.tsx
+- [X] T062 [US2] Add submitProductInfo API method in frontend/src/services/api.ts
+- [X] T063 [US2] Add product info state management to useWorkflow hook in frontend/src/hooks/useWorkflow.ts
+- [X] T064 [US2] Integrate ProductInput component into App.tsx workflow in frontend/src/App.tsx
+- [X] T065 [US2] Add inline validation messages for product name and description in frontend/src/components/ProductInput.tsx
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently - video analysis and product input are separate, functional features
 
