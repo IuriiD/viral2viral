@@ -1,50 +1,152 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+SYNC IMPACT REPORT
+==================
+Version Change: N/A → 1.0.0
+Constitution Type: Initial ratification
+Principles Established: 4 core principles
+- I. Code Quality Standards
+- II. Testing Standards (NON-NEGOTIABLE)
+- III. User Experience Consistency
+- IV. Performance Requirements
+
+Templates Status:
+✅ plan-template.md - Compatible (Constitution Check section present)
+✅ spec-template.md - Compatible (User scenarios and requirements align)
+✅ tasks-template.md - Compatible (Test-first approach supported)
+✅ checklist-template.md - Compatible (Quality gate validations supported)
+
+Follow-up Actions: None - all templates compatible with initial constitution
+-->
+
+# Zeely Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Code Quality Standards
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+All code contributions MUST adhere to the following non-negotiable quality standards:
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+- **Linting & Formatting**: Code MUST pass ESLint checks with zero warnings. Prettier formatting MUST be applied before commits. Configuration files (.eslintrc, .prettierrc) define the single source of truth.
+- **Type Safety**: All JavaScript MUST include JSDoc type annotations for public APIs. TypeScript SHOULD be adopted for new modules where type safety is critical.
+- **Modularity**: Functions MUST be single-purpose with clear inputs/outputs. Maximum function length is 50 lines; exceed only with documented justification.
+- **Documentation**: Every module MUST have a header comment explaining purpose, dependencies, and usage. Public functions MUST have JSDoc with @param, @returns, and @throws tags.
+- **Error Handling**: All async operations MUST use try-catch. Errors MUST include context (operation, inputs, stack trace). No silent failures.
+- **Dependencies**: New dependencies require approval with justification.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### II. Testing Standards (NON-NEGOTIABLE)
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+Test-first development is mandatory for all feature work:
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+- **Test-Driven Development (TDD)**: Tests MUST be written first and MUST fail before implementation begins. The Red-Green-Refactor cycle is strictly enforced.
+- **Test Coverage Requirements**: 
+  - Unit tests: Minimum 80% line coverage for business logic
+  - Integration tests: All API endpoints and external service integrations
+  - Contract tests: All public module interfaces
+- **Test Organization**:
+  - Unit tests: `tests/unit/` - isolated function/class testing
+  - Integration tests: `tests/integration/` - cross-module workflows
+  - Contract tests: `tests/contract/` - API/interface validation
+- **Test Quality**: Tests MUST be independent, deterministic, and fast (<100ms per unit test). No flaky tests permitted in main branch.
+- **Mocking Strategy**: External services (AI APIs, databases) MUST be mocked in unit tests. Integration tests MAY use test environments but MUST NOT depend on production services.
+- **Test Documentation**: Each test file MUST have a header explaining what's being tested and why. Complex test scenarios MUST include comments.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+**Rationale**: TDD ensures correctness before implementation, reduces debugging time, and serves as living documentation. High test coverage enables confident refactoring and prevents regressions.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### III. User Experience Consistency
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+User-facing features MUST deliver predictable, high-quality experiences:
+
+- **API Response Format**: All API responses MUST follow a consistent JSON structure:
+  ```json
+  {
+    "success": true/false,
+    "data": {...},
+    "error": { "code": "ERROR_CODE", "message": "Human-readable" },
+    "meta": { "timestamp": "ISO8601", "requestId": "uuid" }
+  }
+  ```
+- **Error Messages**: User-facing errors MUST be actionable (tell users what to do next). Technical details MUST be logged but NOT exposed to end users.
+- **Validation**: Input validation MUST happen early with clear, specific error messages. Validation rules MUST be consistent across all entry points (API, CLI, UI).
+- **Documentation**: User-facing features MUST have quickstart documentation in `docs/` with working examples. Breaking changes MUST include migration guides.
+- **Accessibility**: Text outputs MUST be readable (no jargon without explanation). CLI tools MUST support `--help` and `--version` flags.
+- **Idempotency**: State-changing operations MUST be idempotent where possible. Retry behavior MUST be documented and safe.
+
+**Rationale**: Consistency reduces cognitive load, enables users to build accurate mental models, and minimizes support burden. Predictable behavior builds trust and adoption.
+
+### IV. Performance Requirements
+
+## Quality Gates
+
+All features MUST pass these gates before merging:
+
+### Pre-Implementation
+- [ ] Constitution compliance verified (all principles addressed in spec)
+- [ ] User stories independently testable and prioritized
+- [ ] Technical approach documented with performance considerations
+
+### Implementation
+- [ ] All tests written first and initially failing
+- [ ] Code passes linting and formatting checks
+- [ ] Test coverage meets minimums (80% unit, 100% integration)
+- [ ] No console.log or debug code in commits
+
+### Pre-Merge
+- [ ] All tests passing and deterministic (3 consecutive runs)
+- [ ] Performance benchmarks meet targets (if applicable)
+- [ ] Documentation updated (code comments, user docs, CHANGELOG)
+- [ ] Code review approved by at least one team member
+- [ ] No unhandled errors or warnings in test runs
+
+## Development Workflow
+
+### Feature Development Process
+1. **Specification**: Create feature spec following `spec-template.md` with testable user stories
+2. **Planning**: Generate implementation plan with `plan-template.md` including Constitution Check
+3. **Task Breakdown**: Create tasks with `tasks-template.md` organized by user story priority
+4. **Test-First Implementation**: For each task:
+   - Write failing tests
+   - Implement minimum code to pass tests
+   - Refactor while keeping tests green
+   - Commit with descriptive message
+5. **Validation**: Run full test suite, linting, and checklist before PR
+6. **Review**: Address feedback, maintain test coverage
+7. **Merge**: Squash commits if needed, update CHANGELOG
+
+### Branching Strategy
+- **Main branch**: Always deployable, all tests passing
+- **Feature branches**: `###-feature-name` format (e.g., `001-ai-text-generation`)
+- **Hotfix branches**: `hotfix-###-description` format
+
+### Commit Standards
+- Format: `type(scope): description` (e.g., `feat(api): add rate limiting`)
+- Types: feat, fix, docs, test, refactor, perf, chore
+- Description: Imperative mood, lowercase, no period, <72 chars
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+### Constitution Authority
+This constitution supersedes all other development practices and guides. Any conflicts between this constitution and other documentation MUST be resolved in favor of the constitution.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+### Amendment Process
+Constitution amendments require:
+1. **Proposal**: Document rationale, impact analysis, and migration plan
+2. **Review**: Team review and approval (consensus or designated authority)
+3. **Version Update**: Semantic versioning (MAJOR.MINOR.PATCH)
+   - MAJOR: Breaking changes to principles or governance
+   - MINOR: New principles or significant expansions
+   - PATCH: Clarifications, typo fixes, non-semantic changes
+4. **Propagation**: Update all affected templates and documentation
+5. **Communication**: Announce changes with migration timeline
+
+### Compliance Review
+- **Per-Feature**: Constitution Check section in every plan.md
+- **Per-PR**: Reviewer MUST verify constitution compliance
+- **Quarterly**: Team reviews constitution relevance and effectiveness
+- **Violations**: MUST be documented in Complexity Tracking section with justification
+
+### Enforcement
+- Automated: Linting, formatting, test coverage checks in CI/CD
+- Manual: Code review checklist includes constitution compliance
+- Escalation: Persistent violations require team discussion and process improvement
+
+**Version**: 1.0.0 | **Ratified**: 2025-11-24 | **Last Amended**: 2025-11-24
