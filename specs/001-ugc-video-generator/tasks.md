@@ -25,16 +25,16 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create backend directory structure per plan.md with modules/, config/, common/ folders
-- [ ] T002 Initialize backend Nest.js project with package.json, tsconfig.json, nest-cli.json in backend/
-- [ ] T003 [P] Create frontend Vite+React+TypeScript project with vite.config.ts, tsconfig.json in frontend/
-- [ ] T004 [P] Configure ESLint and Prettier for backend in backend/eslint.config.js and backend/.prettierrc
-- [ ] T005 [P] Configure ESLint and Prettier for frontend in frontend/eslint.config.js and frontend/.prettierrc
-- [ ] T006 Install backend dependencies: @nestjs/common, @nestjs/core, @aws-sdk/client-s3, @aws-sdk/s3-request-presigner, @google/genai, axios, class-validator, class-transformer, uuid
-- [ ] T007 [P] Install frontend dependencies: react, react-dom, axios, tailwindcss in frontend/package.json
-- [ ] T008 [P] Configure Tailwind CSS in frontend/tailwind.config.js and frontend/src/index.css
-- [ ] T009 Create .env.example files with required environment variables in both backend/ and frontend/
-- [ ] T010 Configure TypeScript strict mode in backend/tsconfig.json and frontend/tsconfig.json
+- [X] T001 Create backend directory structure per plan.md with modules/, config/, common/ folders
+- [X] T002 Initialize backend Nest.js project with package.json, tsconfig.json, nest-cli.json in backend/
+- [X] T003 [P] Create frontend Vite+React+TypeScript project with vite.config.ts, tsconfig.json in frontend/
+- [X] T004 [P] Configure ESLint and Prettier for backend in backend/eslint.config.js and backend/.prettierrc
+- [X] T005 [P] Configure ESLint and Prettier for frontend in frontend/eslint.config.js and frontend/.prettierrc
+- [X] T006 Install backend dependencies: @nestjs/common, @nestjs/core, @aws-sdk/client-s3, @aws-sdk/s3-request-presigner, @google/genai, axios, class-validator, class-transformer, uuid
+- [X] T007 [P] Install frontend dependencies: react, react-dom, axios, tailwindcss in frontend/package.json
+- [X] T008 [P] Configure Tailwind CSS in frontend/tailwind.config.js and frontend/src/index.css
+- [X] T009 Create .env.example files with required environment variables in both backend/ and frontend/
+- [X] T010 Configure TypeScript strict mode in backend/tsconfig.json and frontend/tsconfig.json
 
 ---
 
