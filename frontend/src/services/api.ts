@@ -32,7 +32,7 @@ class ApiClient {
   constructor() {
     this.client = axios.create({
       baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
-      timeout: 30000, // 30 seconds
+      timeout: 120000, // 120 seconds - allows for long-running AI operations
       headers: {
         'Content-Type': 'application/json',
       },
@@ -318,6 +318,93 @@ export async function submitProductInfo(
   const data =
     'data' in response.data && typeof response.data.data === 'object'
       ? (response.data.data as SubmitProductInfoResponse)
+      : response.data;
+
+  return data;
+}
+
+// ============================================================================
+// Prompt API Methods
+// ============================================================================
+
+export interface GenerationPrompt {
+  promptId: string;
+  generatedText: string;
+  userEditedText?: string;
+  finalText: string;
+  characterCount: number;
+  generatedAt: string;
+  approvedAt?: string;
+  moderationStatus: 'pending' | 'approved' | 'flagged' | 'bypassed';
+  moderationFlags?: string[];
+}
+
+/**
+ * Generate text-to-video prompt from analysis and product info
+ */
+export async function generatePrompt(
+  sessionId: string
+): Promise<GenerationPrompt> {
+  const response = await api.post<GenerationPrompt>(
+    `/sessions/${sessionId}/prompt`
+  );
+
+  if (!response.data) {
+    throw new Error('Failed to generate prompt');
+  }
+
+  // Handle double-wrapped response
+  const data =
+    'data' in response.data && typeof response.data.data === 'object'
+      ? (response.data.data as GenerationPrompt)
+      : response.data;
+
+  return data;
+}
+
+/**
+ * Update prompt with user edits
+ */
+export async function updatePrompt(
+  sessionId: string,
+  editedText: string
+): Promise<GenerationPrompt> {
+  const response = await api.patch<GenerationPrompt>(
+    `/sessions/${sessionId}/prompt`,
+    { editedText }
+  );
+
+  if (!response.data) {
+    throw new Error('Failed to update prompt');
+  }
+
+  // Handle double-wrapped response
+  const data =
+    'data' in response.data && typeof response.data.data === 'object'
+      ? (response.data.data as GenerationPrompt)
+      : response.data;
+
+  return data;
+}
+
+/**
+ * Approve prompt for video generation
+ */
+export async function approvePrompt(
+  sessionId: string
+): Promise<GenerationPrompt> {
+  const response = await api.post<GenerationPrompt>(
+    `/sessions/${sessionId}/prompt/approve`
+  );
+
+  if (!response.data) {
+    throw new Error('Failed to approve prompt');
+  }
+
+  // Handle double-wrapped response
+  const data =
+    'data' in response.data && typeof response.data.data === 'object'
+      ? (response.data.data as GenerationPrompt)
       : response.data;
 
   return data;

@@ -7,7 +7,7 @@ interface ProductInputProps {
 
 const MAX_NAME_LENGTH = 100;
 const MIN_NAME_LENGTH = 3;
-const MAX_DESCRIPTION_LENGTH = 250;
+const MAX_DESCRIPTION_LENGTH = 500;
 const MIN_DESCRIPTION_LENGTH = 1;
 
 export const ProductInput: React.FC<ProductInputProps> = ({

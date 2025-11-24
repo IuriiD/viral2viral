@@ -10,6 +10,7 @@ import { VideoModule } from './modules/video/video.module';
 import { AnalysisModule } from './modules/analysis/analysis.module';
 import { SessionsModule } from './modules/sessions/sessions.module';
 import { ProductModule } from './modules/product/product.module';
+import { PromptModule } from './modules/prompt/prompt.module';
 import { SessionService } from './common/session.service';
 
 @Global()
@@ -20,6 +21,7 @@ import { SessionService } from './common/session.service';
     AnalysisModule,
     SessionsModule,
     ProductModule,
+    PromptModule,
   ],
   providers: [SessionService],
   exports: [SessionService],

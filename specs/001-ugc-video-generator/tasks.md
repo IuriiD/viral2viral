@@ -144,29 +144,29 @@
 
 ### Backend Implementation for User Story 3
 
-- [ ] T066 [P] [US3] Create PromptModule in backend/src/modules/prompt/prompt.module.ts
-- [ ] T067 [P] [US3] Create GeneratePromptResponseDto in backend/src/modules/prompt/dto/generate-prompt-response.dto.ts
-- [ ] T068 [P] [US3] Create UpdatePromptRequestDto with validation (1-500 chars) in backend/src/modules/prompt/dto/update-prompt-request.dto.ts
-- [ ] T069 [P] [US3] Create UpdatePromptResponseDto in backend/src/modules/prompt/dto/update-prompt-response.dto.ts
-- [ ] T070 [P] [US3] Create ApprovePromptResponseDto in backend/src/modules/prompt/dto/approve-prompt-response.dto.ts
-- [ ] T071 [US3] Create PromptService with generatePrompt method using GPT-5 via laozhang.ai in backend/src/modules/prompt/prompt.service.ts
-- [ ] T072 [US3] Implement updatePrompt and approvePrompt methods in backend/src/modules/prompt/prompt.service.ts
-- [ ] T073 [US3] Add basic content moderation logic in PromptService in backend/src/modules/prompt/prompt.service.ts
-- [ ] T074 [US3] Create PromptController with POST /sessions/:sessionId/prompt endpoint in backend/src/modules/prompt/prompt.controller.ts
-- [ ] T075 [US3] Add PATCH /sessions/:sessionId/prompt endpoint to PromptController in backend/src/modules/prompt/prompt.controller.ts
-- [ ] T076 [US3] Add POST /sessions/:sessionId/prompt/approve endpoint to PromptController in backend/src/modules/prompt/prompt.controller.ts
-- [ ] T077 [US3] Add session state transition for prompt_generated in backend/src/common/session.service.ts
+- [X] T066 [P] [US3] Create PromptModule in backend/src/modules/prompt/prompt.module.ts
+- [X] T067 [P] [US3] Create GeneratePromptResponseDto in backend/src/modules/prompt/dto/generate-prompt-response.dto.ts
+- [X] T068 [P] [US3] Create UpdatePromptRequestDto with validation (1-500 chars) in backend/src/modules/prompt/dto/update-prompt-request.dto.ts
+- [X] T069 [P] [US3] Create UpdatePromptResponseDto in backend/src/modules/prompt/dto/update-prompt-response.dto.ts
+- [X] T070 [P] [US3] Create ApprovePromptResponseDto in backend/src/modules/prompt/dto/approve-prompt-response.dto.ts
+- [X] T071 [US3] Create PromptService with generatePrompt method using GPT-5 via laozhang.ai in backend/src/modules/prompt/prompt.service.ts
+- [X] T072 [US3] Implement updatePrompt and approvePrompt methods in backend/src/modules/prompt/prompt.service.ts
+- [X] T073 [US3] Add basic content moderation logic in PromptService in backend/src/modules/prompt/prompt.service.ts
+- [X] T074 [US3] Create PromptController with POST /sessions/:sessionId/prompt endpoint in backend/src/modules/prompt/prompt.controller.ts
+- [X] T075 [US3] Add PATCH /sessions/:sessionId/prompt endpoint to PromptController in backend/src/modules/prompt/prompt.controller.ts
+- [X] T076 [US3] Add POST /sessions/:sessionId/prompt/approve endpoint to PromptController in backend/src/modules/prompt/prompt.controller.ts
+- [X] T077 [US3] Add session state transition for prompt_generated in backend/src/common/session.service.ts
 
 ### Frontend Implementation for User Story 3
 
-- [ ] T078 [P] [US3] Create PromptEditor component with editable text area and character counter in frontend/src/components/PromptEditor.tsx
-- [ ] T079 [P] [US3] Add approve button and moderation warnings to PromptEditor component in frontend/src/components/PromptEditor.tsx
-- [ ] T080 [US3] Add generatePrompt API method in frontend/src/services/api.ts
-- [ ] T081 [US3] Add updatePrompt API method in frontend/src/services/api.ts
-- [ ] T082 [US3] Add approvePrompt API method in frontend/src/services/api.ts
-- [ ] T083 [US3] Add prompt state management to useWorkflow hook in frontend/src/hooks/useWorkflow.ts
-- [ ] T084 [US3] Integrate PromptEditor component into App.tsx workflow in frontend/src/App.tsx
-- [ ] T085 [US3] Add validation for prompt length (500 char max) in frontend/src/components/PromptEditor.tsx
+- [X] T078 [P] [US3] Create PromptEditor component with editable text area and character counter in frontend/src/components/PromptEditor.tsx
+- [X] T079 [P] [US3] Add approve button and moderation warnings to PromptEditor component in frontend/src/components/PromptEditor.tsx
+- [X] T080 [US3] Add generatePrompt API method in frontend/src/services/api.ts
+- [X] T081 [US3] Add updatePrompt API method in frontend/src/services/api.ts
+- [X] T082 [US3] Add approvePrompt API method in frontend/src/services/api.ts
+- [X] T083 [US3] Add prompt state management to useWorkflow hook in frontend/src/hooks/useWorkflow.ts
+- [X] T084 [US3] Integrate PromptEditor component into App.tsx workflow in frontend/src/App.tsx
+- [X] T085 [US3] Add validation for prompt length (500 char max) in frontend/src/components/PromptEditor.tsx
 
 **Checkpoint**: All user stories 1-3 should now be independently functional - video analysis, product input, and prompt generation work separately
 

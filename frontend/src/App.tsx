@@ -9,6 +9,7 @@ import { VideoUpload } from './components/VideoUpload';
 import { AnalysisDisplay } from './components/AnalysisDisplay';
 import { ProgressIndicator } from './components/ProgressIndicator';
 import { ProductInput } from './components/ProductInput';
+import { PromptEditor } from './components/PromptEditor';
 
 function App() {
   const {
@@ -18,10 +19,17 @@ function App() {
     isAnalyzing,
     analysis,
     isSubmittingProduct,
+    prompt,
+    isGeneratingPrompt,
+    isUpdatingPrompt,
+    isApprovingPrompt,
     error,
     uploadVideo,
     updateAnalysis,
     submitProductInfo,
+    generatePrompt,
+    updatePrompt,
+    approvePrompt,
     clearError,
   } = useWorkflow();
 
@@ -147,6 +155,50 @@ function App() {
               }
               isSubmitting={isSubmittingProduct}
             />
+          )}
+
+          {/* Step 4: Prompt Generation */}
+          {currentStep === 'prompt-generation' && (
+            <div className="space-y-6">
+              {!prompt && !isGeneratingPrompt && (
+                <div className="bg-white rounded-lg shadow p-6">
+                  <h2 className="text-2xl font-bold mb-4">
+                    Ready to Generate Prompt
+                  </h2>
+                  <p className="text-gray-600 mb-6">
+                    Click the button below to generate a text-to-video prompt
+                    based on your video analysis and product information.
+                  </p>
+                  <button
+                    onClick={generatePrompt}
+                    className="w-full bg-blue-600 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition-colors font-medium"
+                  >
+                    Generate Prompt with AI
+                  </button>
+                </div>
+              )}
+
+              {isGeneratingPrompt && (
+                <div className="bg-white rounded-lg shadow p-6">
+                  <div className="flex items-center justify-center space-x-3">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <p className="text-gray-700">
+                      Generating prompt for video generation using AI...
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {prompt && (
+                <PromptEditor
+                  prompt={prompt}
+                  onUpdate={updatePrompt}
+                  onApprove={approvePrompt}
+                  isUpdating={isUpdatingPrompt}
+                  isApproving={isApprovingPrompt}
+                />
+              )}
+            </div>
           )}
 
           {/* Future steps will be added here */}

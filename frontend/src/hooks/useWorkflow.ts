@@ -6,7 +6,11 @@ import {
   getAnalysisStatus,
   updateAnalysis,
   submitProductInfo,
+  generatePrompt,
+  updatePrompt,
+  approvePrompt,
   VideoAnalysis,
+  GenerationPrompt,
 } from '../services/api';
 
 type WorkflowStep =
@@ -29,6 +33,10 @@ interface UseWorkflowState {
   productName: string | null;
   productDescription: string | null;
   isSubmittingProduct: boolean;
+  prompt: GenerationPrompt | null;
+  isGeneratingPrompt: boolean;
+  isUpdatingPrompt: boolean;
+  isApprovingPrompt: boolean;
   error: string | null;
 }
 
@@ -47,6 +55,10 @@ export function useWorkflow() {
     productName: null,
     productDescription: null,
     isSubmittingProduct: false,
+    prompt: null,
+    isGeneratingPrompt: false,
+    isUpdatingPrompt: false,
+    isApprovingPrompt: false,
     error: null,
   });
 
@@ -351,12 +363,171 @@ export function useWorkflow() {
     [state.sessionId]
   );
 
+  /**
+   * Generate prompt from analysis and product info
+   */
+  const handleGeneratePrompt = useCallback(async () => {
+    if (!state.sessionId) {
+      setState((prev) => ({
+        ...prev,
+        error: 'No active session. Please refresh the page.',
+      }));
+      return;
+    }
+
+    setState((prev) => ({
+      ...prev,
+      isGeneratingPrompt: true,
+      error: null,
+    }));
+
+    try {
+      const generatedPrompt = await generatePrompt(state.sessionId);
+
+      setState((prev) => ({
+        ...prev,
+        isGeneratingPrompt: false,
+        prompt: generatedPrompt,
+      }));
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Failed to generate prompt';
+
+      if (
+        errorMessage.includes('Session not found') ||
+        errorMessage.includes('not found')
+      ) {
+        localStorage.removeItem('sessionId');
+        setState((prev) => ({
+          ...prev,
+          isGeneratingPrompt: false,
+          error: 'Session expired. Please refresh the page and start over.',
+        }));
+      } else {
+        setState((prev) => ({
+          ...prev,
+          isGeneratingPrompt: false,
+          error: errorMessage,
+        }));
+      }
+    }
+  }, [state.sessionId]);
+
+  /**
+   * Update prompt with user edits
+   */
+  const handleUpdatePrompt = useCallback(
+    async (editedText: string) => {
+      if (!state.sessionId) {
+        setState((prev) => ({
+          ...prev,
+          error: 'No active session. Please refresh the page.',
+        }));
+        return;
+      }
+
+      setState((prev) => ({
+        ...prev,
+        isUpdatingPrompt: true,
+        error: null,
+      }));
+
+      try {
+        const updatedPrompt = await updatePrompt(state.sessionId, editedText);
+
+        setState((prev) => ({
+          ...prev,
+          isUpdatingPrompt: false,
+          prompt: updatedPrompt,
+        }));
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to update prompt';
+
+        if (
+          errorMessage.includes('Session not found') ||
+          errorMessage.includes('not found')
+        ) {
+          localStorage.removeItem('sessionId');
+          setState((prev) => ({
+            ...prev,
+            isUpdatingPrompt: false,
+            error: 'Session expired. Please refresh the page and start over.',
+          }));
+        } else {
+          setState((prev) => ({
+            ...prev,
+            isUpdatingPrompt: false,
+            error: errorMessage,
+          }));
+        }
+      }
+    },
+    [state.sessionId]
+  );
+
+  /**
+   * Approve prompt for video generation
+   */
+  const handleApprovePrompt = useCallback(async () => {
+    if (!state.sessionId) {
+      setState((prev) => ({
+        ...prev,
+        error: 'No active session. Please refresh the page.',
+      }));
+      return;
+    }
+
+    setState((prev) => ({
+      ...prev,
+      isApprovingPrompt: true,
+      error: null,
+    }));
+
+    try {
+      const approvedPrompt = await approvePrompt(state.sessionId);
+
+      setState((prev) => ({
+        ...prev,
+        isApprovingPrompt: false,
+        prompt: approvedPrompt,
+        currentStep: 'video-generation', // Move to next step after approval
+      }));
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to approve prompt';
+
+      if (
+        errorMessage.includes('Session not found') ||
+        errorMessage.includes('not found')
+      ) {
+        localStorage.removeItem('sessionId');
+        setState((prev) => ({
+          ...prev,
+          isApprovingPrompt: false,
+          error: 'Session expired. Please refresh the page and start over.',
+        }));
+      } else {
+        setState((prev) => ({
+          ...prev,
+          isApprovingPrompt: false,
+          error: errorMessage,
+        }));
+      }
+    }
+  }, [state.sessionId]);
+
   return {
     ...state,
     uploadVideo: handleUploadVideo,
     triggerAnalysis: handleTriggerAnalysis,
     updateAnalysis: handleUpdateAnalysis,
     submitProductInfo: handleSubmitProductInfo,
+    generatePrompt: handleGeneratePrompt,
+    updatePrompt: handleUpdatePrompt,
+    approvePrompt: handleApprovePrompt,
     clearError,
   };
 }
