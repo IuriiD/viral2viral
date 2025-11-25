@@ -60,8 +60,8 @@ export const loadConfiguration = (): Configuration => {
     },
 
     openai: {
-      apiKey: process.env.OPENAI_API_KEY || '',
-      baseUrl: process.env.OPENAI_API_BASE_URL || 'https://api.laozhang.ai/v1',
+      apiKey: process.env.LAOZHANG_API_KEY || process.env.OPENAI_API_KEY || '',
+      baseUrl: process.env.LAOZHANG_API_BASE_URL || process.env.OPENAI_API_BASE_URL || 'https://api.laozhang.ai/v1',
       gptModel: process.env.OPENAI_GPT_MODEL || 'gpt-5',
       soraModel: process.env.OPENAI_SORA_MODEL || 'sora-2',
     },

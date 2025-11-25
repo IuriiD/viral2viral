@@ -40,9 +40,10 @@ export function ProgressIndicator({
             </div>
             {index < steps.length - 1 && (
               <div
-                className={`absolute top-5 left-1/2 w-full h-0.5 ${
+                className={`absolute top-5 w-full h-0.5 ${
                   index < currentStep ? 'bg-green-500' : 'bg-gray-200'
                 }`}
+                style={{ left: '62%' }}
               />
             )}
           </div>

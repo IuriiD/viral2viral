@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: UGC Video Generator API
+  title: Viral2Viral - UGC Video Cloner API
   description: |
     API for generating advertisement videos based on UGC (User Generated Content) analysis.
     

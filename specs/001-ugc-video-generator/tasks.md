@@ -180,33 +180,33 @@
 
 ### Backend Implementation for User Story 4
 
-- [ ] T086 [P] [US4] Create GenerationModule in backend/src/modules/generation/generation.module.ts
-- [ ] T087 [P] [US4] Create UploadProductImageRequestDto with validation in backend/src/modules/product/dto/upload-product-image-request.dto.ts
-- [ ] T088 [P] [US4] Create UploadProductImageResponseDto in backend/src/modules/product/dto/upload-product-image-response.dto.ts
-- [ ] T089 [P] [US4] Create GenerateVideoResponseDto in backend/src/modules/generation/dto/generate-video-response.dto.ts
-- [ ] T090 [P] [US4] Create GetVideoStatusResponseDto in backend/src/modules/generation/dto/get-video-status-response.dto.ts
-- [ ] T091 [US4] Add generateProductImageUploadUrl method to ProductService in backend/src/modules/product/product.service.ts
-- [ ] T092 [US4] Create GenerationService with generateVideo method using Sora 2 via laozhang.ai in backend/src/modules/generation/generation.service.ts
-- [ ] T093 [US4] Implement async video generation with status polling in backend/src/modules/generation/generation.service.ts
-- [ ] T094 [US4] Add getVideoStatus method to retrieve generation progress in backend/src/modules/generation/generation.service.ts
-- [ ] T095 [US4] Add POST /sessions/:sessionId/product/image/upload-url endpoint to ProductController in backend/src/modules/product/product.controller.ts
-- [ ] T096 [US4] Create GenerationController with POST /sessions/:sessionId/generate endpoint in backend/src/modules/generation/generation.controller.ts
-- [ ] T097 [US4] Add GET /sessions/:sessionId/generate endpoint to GenerationController in backend/src/modules/generation/generation.controller.ts
-- [ ] T098 [US4] Add session state transitions for generating_video and video_complete in backend/src/common/session.service.ts
+- [X] T086 [P] [US4] Create GenerationModule in backend/src/modules/generation/generation.module.ts
+- [X] T087 [P] [US4] Create UploadProductImageRequestDto with validation in backend/src/modules/product/dto/upload-product-image-request.dto.ts
+- [X] T088 [P] [US4] Create UploadProductImageResponseDto in backend/src/modules/product/dto/upload-product-image-response.dto.ts
+- [X] T089 [P] [US4] Create GenerateVideoResponseDto in backend/src/modules/generation/dto/generate-video-response.dto.ts
+- [X] T090 [P] [US4] Create GetVideoStatusResponseDto in backend/src/modules/generation/dto/get-video-status-response.dto.ts
+- [X] T091 [US4] Add generateProductImageUploadUrl method to ProductService in backend/src/modules/product/product.service.ts
+- [X] T092 [US4] Create GenerationService with generateVideo method using Sora 2 via laozhang.ai in backend/src/modules/generation/generation.service.ts
+- [X] T093 [US4] Implement async video generation with status polling in backend/src/modules/generation/generation.service.ts
+- [X] T094 [US4] Add getVideoStatus method to retrieve generation progress in backend/src/modules/generation/generation.service.ts
+- [X] T095 [US4] Add POST /sessions/:sessionId/product/image/upload-url endpoint to ProductController in backend/src/modules/product/product.controller.ts
+- [X] T096 [US4] Create GenerationController with POST /sessions/:sessionId/generate endpoint in backend/src/modules/generation/generation.controller.ts
+- [X] T097 [US4] Add GET /sessions/:sessionId/generate endpoint to GenerationController in backend/src/modules/generation/generation.controller.ts
+- [X] T098 [US4] Add session state transitions for generating_video and video_complete in backend/src/common/session.service.ts
 
 ### Frontend Implementation for User Story 4
 
-- [ ] T099 [P] [US4] Create ImageUpload component with file input and preview in frontend/src/components/ImageUpload.tsx
-- [ ] T100 [P] [US4] Create VideoPlayer component with playback controls for both original and generated videos in frontend/src/components/VideoPlayer.tsx
-- [ ] T101 [P] [US4] Add download button to VideoPlayer component in frontend/src/components/VideoPlayer.tsx
-- [ ] T102 [US4] Add uploadProductImage API method in frontend/src/services/api.ts
-- [ ] T103 [US4] Add generateVideo API method in frontend/src/services/api.ts
-- [ ] T104 [US4] Add getVideoStatus API method with polling logic in frontend/src/services/api.ts
-- [ ] T105 [US4] Add image and video generation state management to useWorkflow hook in frontend/src/hooks/useWorkflow.ts
-- [ ] T106 [US4] Implement status polling with 3-5 second intervals in useWorkflow hook in frontend/src/hooks/useWorkflow.ts
-- [ ] T107 [US4] Integrate ImageUpload and VideoPlayer components into App.tsx workflow in frontend/src/App.tsx
-- [ ] T108 [US4] Add side-by-side video comparison layout in frontend/src/App.tsx
-- [ ] T109 [US4] Add error handling for image upload and video generation failures in frontend/src/App.tsx
+- [X] T099 [P] [US4] Create ImageUpload component with file input and preview in frontend/src/components/ImageUpload.tsx
+- [X] T100 [P] [US4] Create VideoPlayer component with playback controls for both original and generated videos in frontend/src/components/VideoPlayer.tsx
+- [X] T101 [P] [US4] Add download button to VideoPlayer component in frontend/src/components/VideoPlayer.tsx
+- [X] T102 [US4] Add uploadProductImage API method in frontend/src/services/api.ts
+- [X] T103 [US4] Add generateVideo API method in frontend/src/services/api.ts
+- [X] T104 [US4] Add getVideoStatus API method with polling logic in frontend/src/services/api.ts
+- [X] T105 [US4] Add image and video generation state management to useWorkflow hook in frontend/src/hooks/useWorkflow.ts
+- [X] T106 [US4] Implement status polling with 3-5 second intervals in useWorkflow hook in frontend/src/hooks/useWorkflow.ts
+- [X] T107 [US4] Integrate ImageUpload and VideoPlayer components into App.tsx workflow in frontend/src/App.tsx
+- [X] T108 [US4] Add side-by-side video comparison layout in frontend/src/App.tsx
+- [X] T109 [US4] Add error handling for image upload and video generation failures in frontend/src/App.tsx
 
 **Checkpoint**: Complete workflow functional - users can upload videos, analyze them, enter product info, generate prompts, upload product images, and generate videos
 

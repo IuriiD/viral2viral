@@ -10,6 +10,8 @@ import { AnalysisDisplay } from './components/AnalysisDisplay';
 import { ProgressIndicator } from './components/ProgressIndicator';
 import { ProductInput } from './components/ProductInput';
 import { PromptEditor } from './components/PromptEditor';
+import { ImageUpload } from './components/ImageUpload';
+import { VideoPlayer } from './components/VideoPlayer';
 
 function App() {
   const {
@@ -23,6 +25,12 @@ function App() {
     isGeneratingPrompt,
     isUpdatingPrompt,
     isApprovingPrompt,
+    productImagePreview,
+    isUploadingImage,
+    imageUploadProgress,
+    generatedVideo,
+    isGeneratingVideo,
+    originalVideoUrl,
     error,
     uploadVideo,
     updateAnalysis,
@@ -30,6 +38,9 @@ function App() {
     generatePrompt,
     updatePrompt,
     approvePrompt,
+    selectProductImage,
+    uploadProductImage,
+    generateVideo: startGenerateVideo,
     clearError,
   } = useWorkflow();
 
@@ -68,10 +79,10 @@ function App() {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <h1 className="text-2xl font-bold text-gray-900">
-            UGC Video Generator
+            Viral2Viral - UGC Video Cloner [POC]
           </h1>
           <p className="text-sm text-gray-600 mt-1">
-            Transform your UGC videos into compelling advertisements
+            Recreate successful UGC ads for your product using AI
           </p>
         </div>
       </header>
@@ -183,7 +194,7 @@ function App() {
                   <div className="flex items-center justify-center space-x-3">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                     <p className="text-gray-700">
-                      Generating prompt for video generation using AI...
+                      Creating a prompt for video generation using AI...
                     </p>
                   </div>
                 </div>
@@ -201,6 +212,131 @@ function App() {
             </div>
           )}
 
+          {/* Step 5: Video Generation */}
+          {currentStep === 'video-generation' && (
+            <div className="space-y-6">
+              {/* Image Upload Section */}
+              <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-2xl font-bold mb-4">
+                  Upload Product Image
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Upload an image of your product to be used as reference for
+                  the video generation.
+                </p>
+                <ImageUpload
+                  onImageSelect={selectProductImage}
+                  onUpload={uploadProductImage}
+                  uploadProgress={imageUploadProgress}
+                  previewUrl={productImagePreview}
+                  error={
+                    error?.includes('image') || error?.includes('Image')
+                      ? error
+                      : undefined
+                  }
+                  disabled={isUploadingImage}
+                />
+              </div>
+
+              {/* Generate Video Button */}
+              {imageUploadProgress === 100 && !isGeneratingVideo && !generatedVideo && (
+                <div className="bg-white rounded-lg shadow p-6">
+                  <h2 className="text-2xl font-bold mb-4">
+                    Ready to Generate Video
+                  </h2>
+                  <p className="text-gray-600 mb-6">
+                    Your prompt is approved and product image is uploaded.
+                    Click below to start generating your advertisement video
+                    using Sora 2 AI.
+                  </p>
+                  <button
+                    onClick={startGenerateVideo}
+                    className="w-full bg-green-600 text-white px-4 py-3 rounded-md hover:bg-green-700 transition-colors font-medium"
+                  >
+                    Generate Advertisement Video
+                  </button>
+                </div>
+              )}
+
+              {/* Video Generation Progress */}
+              {isGeneratingVideo && generatedVideo && (
+                <div className="bg-white rounded-lg shadow p-6">
+                  <h2 className="text-2xl font-bold mb-4">
+                    Generating Your Video
+                  </h2>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+                      <div className="flex-1">
+                        <p className="text-gray-700 font-medium">
+                          Video generation in progress...
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          Status: {generatedVideo.status}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <p className="text-sm text-blue-800">
+                        This may take 3-5 minutes. Please don't close this page.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Step 6: Complete - Show Videos Side by Side */}
+          {currentStep === 'complete' && generatedVideo?.downloadUrl && (
+            <div className="space-y-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-2xl font-bold mb-2 text-green-600">
+                  ✨ Video Generation Complete!
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  Your advertisement video has been successfully generated.
+                  Compare it with the original video below.
+                </p>
+              </div>
+
+              {/* Side-by-Side Video Comparison */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Original Video */}
+                {originalVideoUrl && (
+                  <VideoPlayer
+                    videoUrl={originalVideoUrl}
+                    title="Original UGC Video"
+                    className="bg-white rounded-lg shadow p-6"
+                  />
+                )}
+
+                {/* Generated Video */}
+                <VideoPlayer
+                  videoUrl={generatedVideo.downloadUrl}
+                  title="Generated Advertisement"
+                  downloadUrl={generatedVideo.downloadUrl}
+                  className="bg-white rounded-lg shadow p-6"
+                />
+              </div>
+
+              {/* Success Actions */}
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold mb-4">
+                  What's Next?
+                </h3>
+                <div className="space-y-3">
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="w-full bg-blue-600 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition-colors font-medium"
+                  >
+                    Create Another Video
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Future steps will be added here */}
         </div>
       </main>
@@ -209,7 +345,7 @@ function App() {
       <footer className="bg-white border-t mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <p className="text-center text-sm text-gray-500">
-            UGC Video Generator - POC Application
+            Viral2Viral - UGC Video Cloner [POC]
           </p>
         </div>
       </footer>

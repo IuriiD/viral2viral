@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import {
   createSession,
   uploadVideo,
@@ -9,8 +9,12 @@ import {
   generatePrompt,
   updatePrompt,
   approvePrompt,
+  uploadProductImage,
+  generateVideo,
+  getVideoStatus,
   VideoAnalysis,
   GenerationPrompt,
+  GeneratedVideo,
 } from '../services/api';
 
 type WorkflowStep =
@@ -37,6 +41,13 @@ interface UseWorkflowState {
   isGeneratingPrompt: boolean;
   isUpdatingPrompt: boolean;
   isApprovingPrompt: boolean;
+  productImage: File | null;
+  productImagePreview: string | null;
+  isUploadingImage: boolean;
+  imageUploadProgress: number;
+  generatedVideo: GeneratedVideo | null;
+  isGeneratingVideo: boolean;
+  originalVideoUrl: string | null;
   error: string | null;
 }
 
@@ -59,8 +70,17 @@ export function useWorkflow() {
     isGeneratingPrompt: false,
     isUpdatingPrompt: false,
     isApprovingPrompt: false,
+    productImage: null,
+    productImagePreview: null,
+    isUploadingImage: false,
+    imageUploadProgress: 0,
+    generatedVideo: null,
+    isGeneratingVideo: false,
+    originalVideoUrl: null,
     error: null,
   });
+
+  const videoPollingInterval = useRef<number | null>(null);
 
   /**
    * Initialize session on mount
@@ -519,6 +539,178 @@ export function useWorkflow() {
     }
   }, [state.sessionId]);
 
+  /**
+   * Handle product image selection
+   */
+  const handleImageSelect = useCallback((file: File) => {
+    // Create preview URL
+    const previewUrl = URL.createObjectURL(file);
+
+    setState((prev) => ({
+      ...prev,
+      productImage: file,
+      productImagePreview: previewUrl,
+    }));
+  }, []);
+
+  /**
+   * Upload product image
+   */
+  const handleUploadProductImage = useCallback(async () => {
+    if (!state.sessionId || !state.productImage) {
+      setState((prev) => ({
+        ...prev,
+        error: 'No image selected or session not ready.',
+      }));
+      return;
+    }
+
+    setState((prev) => ({
+      ...prev,
+      isUploadingImage: true,
+      imageUploadProgress: 0,
+      error: null,
+    }));
+
+    try {
+      await uploadProductImage(state.sessionId, state.productImage, (progress) => {
+        setState((prev) => ({
+          ...prev,
+          imageUploadProgress: progress,
+        }));
+      });
+
+      setState((prev) => ({
+        ...prev,
+        isUploadingImage: false,
+        imageUploadProgress: 100,
+      }));
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to upload image';
+
+      setState((prev) => ({
+        ...prev,
+        isUploadingImage: false,
+        error: errorMessage,
+      }));
+    }
+  }, [state.sessionId, state.productImage]);
+
+  /**
+   * Generate video using Sora 2
+   */
+  const handleGenerateVideo = useCallback(async () => {
+    if (!state.sessionId) {
+      setState((prev) => ({
+        ...prev,
+        error: 'No active session. Please refresh the page.',
+      }));
+      return;
+    }
+
+    setState((prev) => ({
+      ...prev,
+      isGeneratingVideo: true,
+      error: null,
+    }));
+
+    try {
+      const video = await generateVideo(state.sessionId);
+
+      setState((prev) => ({
+        ...prev,
+        generatedVideo: video,
+      }));
+
+      // Start polling for video status
+      if (videoPollingInterval.current) {
+        clearInterval(videoPollingInterval.current);
+      }
+
+      videoPollingInterval.current = setInterval(async () => {
+        try {
+          const status = await getVideoStatus(state.sessionId!);
+
+          setState((prev) => ({
+            ...prev,
+            generatedVideo: status,
+          }));
+
+          if (status.status === 'complete') {
+            if (videoPollingInterval.current) {
+              clearInterval(videoPollingInterval.current);
+              videoPollingInterval.current = null;
+            }
+            setState((prev) => ({
+              ...prev,
+              isGeneratingVideo: false,
+              currentStep: 'complete',
+            }));
+          } else if (status.status === 'failed') {
+            if (videoPollingInterval.current) {
+              clearInterval(videoPollingInterval.current);
+              videoPollingInterval.current = null;
+            }
+            setState((prev) => ({
+              ...prev,
+              isGeneratingVideo: false,
+              error: status.error?.message || 'Video generation failed',
+            }));
+          }
+        } catch (error) {
+          console.error('Error checking video status:', error);
+          if (videoPollingInterval.current) {
+            clearInterval(videoPollingInterval.current);
+            videoPollingInterval.current = null;
+          }
+          setState((prev) => ({
+            ...prev,
+            isGeneratingVideo: false,
+            error:
+              error instanceof Error
+                ? error.message
+                : 'Failed to check video status',
+          }));
+        }
+      }, 4000); // Poll every 4 seconds (within 3-5 second range)
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Failed to start video generation';
+
+      if (
+        errorMessage.includes('Session not found') ||
+        errorMessage.includes('not found')
+      ) {
+        localStorage.removeItem('sessionId');
+        setState((prev) => ({
+          ...prev,
+          isGeneratingVideo: false,
+          error: 'Session expired. Please refresh the page and start over.',
+        }));
+      } else {
+        setState((prev) => ({
+          ...prev,
+          isGeneratingVideo: false,
+          error: errorMessage,
+        }));
+      }
+    }
+  }, [state.sessionId]);
+
+  /**
+   * Cleanup polling on unmount
+   */
+  useEffect(() => {
+    return () => {
+      if (videoPollingInterval.current) {
+        clearInterval(videoPollingInterval.current);
+      }
+    };
+  }, []);
+
   return {
     ...state,
     uploadVideo: handleUploadVideo,
@@ -528,6 +720,9 @@ export function useWorkflow() {
     generatePrompt: handleGeneratePrompt,
     updatePrompt: handleUpdatePrompt,
     approvePrompt: handleApprovePrompt,
+    selectProductImage: handleImageSelect,
+    uploadProductImage: handleUploadProductImage,
+    generateVideo: handleGenerateVideo,
     clearError,
   };
 }

@@ -6,6 +6,7 @@
  */
 
 import axios, { AxiosInstance, AxiosError } from 'axios';
+import { ModerationStatus } from '../types';
 
 /**
  * API response wrapper
@@ -93,23 +94,49 @@ class ApiClient {
   }
 
   /**
-   * Upload file to presigned URL
+   * Upload file to presigned URL using native fetch for better S3 compatibility
    */
   async uploadFile(
     presignedUrl: string,
     file: File,
     onProgress?: (progress: number) => void
   ): Promise<void> {
-    await axios.put(presignedUrl, file, {
-      headers: {
-        'Content-Type': file.type,
-      },
-      onUploadProgress: (progressEvent) => {
-        if (onProgress && progressEvent.total) {
-          const progress = (progressEvent.loaded / progressEvent.total) * 100;
+    // Use XMLHttpRequest for progress tracking with fetch-like behavior
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+
+      // Track upload progress
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable && onProgress) {
+          const progress = (e.loaded / e.total) * 100;
           onProgress(Math.round(progress));
         }
-      },
+      });
+
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve();
+        } else {
+          reject(new Error(`Upload failed with status ${xhr.status}`));
+        }
+      });
+
+      xhr.addEventListener('error', () => {
+        reject(new Error('Upload failed'));
+      });
+
+      xhr.addEventListener('abort', () => {
+        reject(new Error('Upload aborted'));
+      });
+
+      // Open PUT request to presigned URL
+      xhr.open('PUT', presignedUrl);
+
+      // Set Content-Type header - this is part of the presigned URL signature
+      xhr.setRequestHeader('Content-Type', file.type);
+
+      // Send the file
+      xhr.send(file);
     });
   }
 }
@@ -335,7 +362,7 @@ export interface GenerationPrompt {
   characterCount: number;
   generatedAt: string;
   approvedAt?: string;
-  moderationStatus: 'pending' | 'approved' | 'flagged' | 'bypassed';
+  moderationStatus: ModerationStatus;
   moderationFlags?: string[];
 }
 
@@ -409,3 +436,118 @@ export async function approvePrompt(
 
   return data;
 }
+
+// ============================================================================
+// Product Image Upload API Methods
+// ============================================================================
+
+export interface UploadProductImageRequest {
+  fileName: string;
+  fileSize: number;
+  mimeType: string;
+}
+
+export interface UploadProductImageResponse {
+  uploadUrl: string;
+  uploadFields: Record<string, string>;
+  s3Key: string;
+}
+
+/**
+ * Upload product image file directly to backend (bypasses S3 CORS)
+ */
+export async function uploadProductImage(
+  sessionId: string,
+  file: File,
+  onProgress?: (progress: number) => void
+): Promise<void> {
+  // Create form data for multipart upload
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+
+  // Upload directly to backend using axios for progress tracking
+  await axios.post(
+    `${baseURL}/sessions/${sessionId}/product/image/upload`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      onUploadProgress: (progressEvent: any) => {
+        if (onProgress && progressEvent.total) {
+          const progress = (progressEvent.loaded / progressEvent.total) * 100;
+          onProgress(Math.round(progress));
+        }
+      },
+    }
+  );
+}
+
+// ============================================================================
+// Video Generation API Methods
+// ============================================================================
+
+export interface GeneratedVideo {
+  generatedVideoId: string;
+  s3Key: string;
+  s3Bucket: string;
+  fileName: string;
+  fileSize?: number;
+  mimeType: string;
+  status: 'pending' | 'processing' | 'complete' | 'failed';
+  initiatedAt: string;
+  completedAt?: string;
+  estimatedCompletionTime?: string;
+  downloadUrl?: string;
+  error?: {
+    code: string;
+    message: string;
+    timestamp: string;
+    retryable: boolean;
+  };
+}
+
+/**
+ * Generate video using Sora 2
+ */
+export async function generateVideo(sessionId: string): Promise<GeneratedVideo> {
+  const response = await api.post<GeneratedVideo>(
+    `/sessions/${sessionId}/generate`
+  );
+
+  if (!response.data) {
+    throw new Error('Failed to start video generation');
+  }
+
+  // Handle double-wrapped response
+  const data =
+    'data' in response.data && typeof response.data.data === 'object'
+      ? (response.data.data as GeneratedVideo)
+      : response.data;
+
+  return data;
+}
+
+/**
+ * Get video generation status (for polling)
+ */
+export async function getVideoStatus(sessionId: string): Promise<GeneratedVideo> {
+  const response = await api.get<GeneratedVideo>(
+    `/sessions/${sessionId}/generate`
+  );
+
+  if (!response.data) {
+    throw new Error('Failed to get video status');
+  }
+
+  // Handle double-wrapped response
+  const data =
+    'data' in response.data && typeof response.data.data === 'object'
+      ? (response.data.data as GeneratedVideo)
+      : response.data;
+
+  return data;
+}
+
