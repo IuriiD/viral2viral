@@ -387,3 +387,121 @@ Final 8-Second Video Prompt:**\n\n8 seconds; Dynamic, clean lens. A hand pulls o
   ]
 }
   */
+
+const scenes = [
+    {
+      "Timestamp from original video": "0:00",
+      "Duration": "1.5s",
+      "Scene Purpose": "Hook/Problem",
+      "Visual Details": {
+        "Camera angle and movement": "Medium close-up, slightly tilted down, hand holding AG1 pouch enters from bottom right, moves slightly up.",
+        "Subject positioning and action": "Hand holding a large green AG1 pouch, which is standing upright in a cardboard box insert.",
+        "Lighting": "Bright, even, natural light, no harsh shadows. White balance suggests daylight.",
+        "Color palette": "Dominantly dark green (AG1 pouch, box), white (AG1 logo text), light brown (cardboard), cool grading.",
+        "On-screen elements": "Large white 'AG1' logo with a green 'TH' symbol. Text on pouch: 'Comprehensive + Convenient Daily Nutrition'. Yellow-green text overlay: 'Free Year Supply of Vitamin D & 5 Free Travel Packs'. 'TikTok: Business Creative Center' watermarks.",
+        "Visual effects or transitions": "None, direct cut."
+      },
+      "Cinematic Details": {
+        "Shot type": "Medium close-up/Detail shot",
+        "Pacing/rhythm": "Slow, steady visual.",
+        "Style and aesthetic": "Product demo, informative, clean."
+      },
+      "Audio Details": {
+        "Dialogue/voiceover": "Remembering to take all of my supplements is a lot sometimes.",
+        "Sound design": "Upbeat, light background music, female voice is calm and conversational.",
+        "Timing": "Dialogue starts immediately with the visual."
+      }
+    },
+    {
+      "Timestamp from original video": "0:03",
+      "Duration": "1.5s",
+      "Scene Purpose": "Solution",
+      "Visual Details": {
+        "Camera angle and movement": "Medium shot, static camera, eye-level.",
+        "Subject positioning and action": "Young woman with long brown hair, white t-shirt, standing in a bright room, holding a green AG1 bottle with a green liquid. She smiles and looks directly at the camera.",
+        "Lighting": "Bright, natural light, soft shadows, warm-neutral color temperature.",
+        "Color palette": "White (t-shirt, background wall), green (drink, bottle), natural skin tones, warm grading.",
+        "On-screen elements": "Yellow-green text overlay: 'Free Year Supply of Vitamin D & 5 Free Travel Packs'. 'TikTok: Business Creative Center' watermarks.",
+        "Visual effects or transitions": "None, direct cut."
+      },
+      "Cinematic Details": {
+        "Shot type": "Medium shot",
+        "Pacing/rhythm": "Moderate, engaging.",
+        "Style and aesthetic": "Vlog/influencer style, product demonstration."
+      },
+      "Audio Details": {
+        "Dialogue/voiceover": "And this is so much more than just a greens powder.",
+        "Sound design": "Upbeat background music continues, female voice is energetic and positive.",
+        "Timing": "Dialogue starts immediately with the visual."
+      }
+    },
+    {
+      "Timestamp from original video": "0:11.5",
+      "Duration": "2s",
+      "Scene Purpose": "Solution/Benefit",
+      "Visual Details": {
+        "Camera angle and movement": "Medium shot, static camera, eye-level.",
+        "Subject positioning and action": "Young man with a beard, glasses, and a green cap, wearing a blue zip-up hoodie over a green t-shirt. He holds an AG1 pouch, smiles, and gestures towards the camera.",
+        "Lighting": "Bright, even lighting, subtle shadows, neutral color temperature.",
+        "Color palette": "Blue (hoodie), green (cap, shirt, pouch), natural skin tones, white (background wall), cool-neutral grading.",
+        "On-screen elements": "'AG1' pouch prominently displayed. 'TikTok: Business Creative Center' watermarks.",
+        "Visual effects or transitions": "None, direct cut."
+      },
+      "Cinematic Details": {
+        "Shot type": "Medium shot",
+        "Pacing/rhythm": "Moderate, informative.",
+        "Style and aesthetic": "Vlog/influencer style, testimonial."
+      },
+      "Audio Details": {
+        "Dialogue/voiceover": "This helps me support my immune system, my gut health, and energy,",
+        "Sound design": "Upbeat background music continues, male voice is clear and enthusiastic.",
+        "Timing": "Dialogue starts immediately with the visual."
+      }
+    },
+    {
+      "Timestamp from original video": "0:24",
+      "Duration": "1.5s",
+      "Scene Purpose": "Solution/Ease of Use",
+      "Visual Details": {
+        "Camera angle and movement": "Close-up, overhead shot, slight pan as the bottle is picked up and shaken.",
+        "Subject positioning and action": "Hand pouring clear water into a glass bottle containing green AG1 liquid, then capping and shaking the bottle vigorously.",
+        "Lighting": "Bright, even overhead light, minimal shadows, neutral color temperature.",
+        "Color palette": "Green (liquid), clear (water, bottle), light grey (countertop), metallic (bottle lid), cool grading.",
+        "On-screen elements": "'TikTok: Business Creative Center' watermarks.",
+        "Visual effects or transitions": "None, direct cut."
+      },
+      "Cinematic Details": {
+        "Shot type": "Close-up/Detail shot",
+        "Pacing/rhythm": "Fast, quick action.",
+        "Style and aesthetic": "Product demonstration, instructional."
+      },
+      "Audio Details": {
+        "Dialogue/voiceover": "None (visuals and sound effects are key here).",
+        "Sound design": "Pouring sound, liquid gurgling, shaking sound (strong, distinct). Background music continues, slightly louder to emphasize action.",
+        "Timing": "Sounds synchronized with visual actions."
+      }
+    },
+    {
+      "Timestamp from original video": "0:28.5",
+      "Duration": "1.5s",
+      "Scene Purpose": "CTA",
+      "Visual Details": {
+        "Camera angle and movement": "Medium shot for man, then quick cut to close-up for travel packs. Man holds the bottle, then the shot transitions to a flat lay of the travel packs.",
+        "Subject positioning and action": "Man holding a small dark green dropper bottle (Vitamin D), smiling. Immediately followed by a flat lay of five dark green AG1 travel packs on a wooden surface.",
+        "Lighting": "Bright, even lighting for both shots, neutral color temperature.",
+        "Color palette": "Dark green (bottle, packs), natural skin tones (man), light brown wood (surface for packs), cool-neutral grading.",
+        "On-screen elements": "Bottle label 'D3 + K2'. Text on packs: 'Comprehensive + Convenient Daily Nutrition'. 'TikTok: Business Creative Center' watermarks.",
+        "Visual effects or transitions": "Quick cut between the Vitamin D bottle and the travel packs."
+      },
+      "Cinematic Details": {
+        "Shot type": "Medium shot (man), Close-up (packs)",
+        "Pacing/rhythm": "Fast, urgent for CTA.",
+        "Style and aesthetic": "Product offer, direct marketing."
+      },
+      "Audio Details": {
+        "Dialogue/voiceover": "you'll receive this year supply of this liquid Vitamin D and five free travel packs.",
+        "Sound design": "Upbeat background music continues, male voice is clear and persuasive.",
+        "Timing": "Dialogue starts immediately with the visual."
+      }
+    }
+  ];
