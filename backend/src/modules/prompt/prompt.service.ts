@@ -117,49 +117,51 @@ Please respond with a valid JSON object only with a key "prompt" containing the 
 The "prompt" value should be a complete, ready-to-use prompt for text-to-video generation, without any conversational filler.
 `;
 
-      // // Call GPT-5 via laozhang.ai
-      // const response = await this.httpClient.post('/chat/completions', {
-      //   model: this.gptModel,
-      //   messages: [{ role: 'user', content: userMessage }],
-      //   temperature: 0.7,
-      //   max_tokens: 4000,
-      // });
+      // [PROD] Call GPT-5 via laozhang.ai
+      const response = await this.httpClient.post('/chat/completions', {
+        model: this.gptModel,
+        messages: [{ role: 'user', content: userMessage }],
+        temperature: 0.7,
+        max_tokens: 4000,
+      });
 
+      // DEBUG
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response: any = {};
-      response.data = {
-        id: 'chatcmpl-CfVgjLYMX3CHZcKNsupj595S3k2r1',
-        object: 'chat.completion',
-        created: 1764009293,
-        model: 'gpt-5-2025-08-07',
-        choices: [
-          {
-            index: 0,
-            message: {
-              role: 'assistant',
-              content:
-                '{\n  "prompt": "8 seconds; UGC smartphone realism, 35mm-equivalent prime lens, shallow depth of field, 4K, 24fps. Subject + action: A fast, clean UGC unboxing-to-testimonial sequence showcasing SuperBelly Mango Passion Fruit as an easy daily gut-support drink. Aesthetic: bright natural daylight, lifestyle product demo with authentic testimonial energy, minimal props, no distracting clutter.\\nCamera movement: Scene 1 (0:00–0:01.5) slight upward pan from inside an open mango-yellow shipping box to a matte mango-yellow SuperBelly pouch; Scene 2 (0:01.5–0:03.5) static medium shot on woman in a bright kitchen, hard cut to tight detail of scoop; Scene 3 (0:03.5–0:05.5) static medium close-up on man speaking; Scene 4 (0:05.5–0:08.0) medium close-up on man holding a clear shaker, hard cut to overhead product flat lay.\\nPacing: fast and upbeat with snappy hard cuts on the musical beat; quick intro hook, direct benefit line, punchy CTA finish.\\nColors: mango-yellow and passionfruit purple accents, fresh greens, crisp white backgrounds, warm wood tones, natural skin tones. High contrast but soft shadows.\\nAudio: upbeat tropical pop bed (light marimba, claps, soft kick), medium intensity, rises slightly toward the end; subtle foley for the powder scoop; clean, intimate VO. No reverb.\\nText overlay: persistent top-left sans-serif, white with soft drop shadow: “Free Shaker Bottle + 5 Free Travel Sticks.” Keep size readable on mobile; animate in subtly at 0:00 and gently scale up 5% at the CTA.\\nDialogue (timed to scenes):\\n- Scene 1 (0:00–0:01.5, female VO over unboxing): “Remembering to take all of my supplements is a lot sometimes.”\\n- Scene 2 (0:01.5–0:03.5, female VO over medium shot and scoop close-up): “And this is so much more than just a mango passion fruit drink—it’s packed with prebiotics, probiotics, and belly-loving fiber.”\\n- Scene 3 (0:03.5–0:05.5, male on-camera): “It’s helped my gut health, regularity, and daily energy—and I’ve noticed way less bloating.”\\n- Scene 4 (0:05.5–0:08.0, male VO on shaker and flat lay): “Order SuperBelly Mango Passion Fruit now and get a free shaker bottle and five free travel sticks.”\\nVisual direction by scene:\\n- Scene 1 Hook (0:00–0:01.5): Medium close-up; hand with rings gently lifts a large matte mango-yellow SuperBelly pouch from a custom-fit mango-yellow box lined with tropical leaf print. Clear white “SuperBelly” wordmark, flavor copy “Mango Passion Fruit,” and small icons: Prebiotic • Probiotic • Fiber. Bright, even daylight; soft shadows. No VFX.\\n- Scene 2 Solution (0:01.5–0:03.5): Medium shot; smiling woman in white tee and jeans, slight three-quarter angle in a sunlit minimalist kitchen, holding a clear shaker with a golden-mango drink (tiny bubbles, condensation). Hard cut to close-up of a mango-colored scoop pulling sunny-yellow powder from a brushed-metal canister; a soft “scoop” foley. Subtle logo visible on shaker.\\n- Scene 3 Benefits (0:03.5–0:05.5): Medium close-up; bearded man with glasses and cap, blue hoodie over green tee, holding the SuperBelly pouch at chest level, gesturing with animated excitement. Bright, soft, even lighting with gentle shadow for depth. Clean white patterned wall behind.\\n- Scene 4 CTA (0:05.5–0:08.0): Medium close-up; same man now holds a clear BPA-free shaker with SuperBelly logo toward camera, smiles. Hard cut to overhead flat lay: five mango-yellow SuperBelly travel sticks fanned neatly on warm walnut wood beside the pouch and shaker. The overlay text subtly scales up. Music hits a feel-good flourish on the last beat.\\nEnd with: CTA visual and audio: freeze on the overhead flat lay of the five travel sticks, pouch, and shaker with the overlay “Free Shaker Bottle + 5 Free Travel Sticks” and a small URL/tag @SuperBelly in bottom-right; music button resolves on the final word of the CTA VO."\n}',
-              refusal: null,
-              annotations: [],
-            },
-            finish_reason: 'stop',
-          },
-        ],
-        usage: {
-          prompt_tokens: 1667,
-          completion_tokens: 3562,
-          total_tokens: 5229,
-          prompt_tokens_details: { cached_tokens: 0, audio_tokens: 0 },
-          completion_tokens_details: {
-            reasoning_tokens: 2560,
-            audio_tokens: 0,
-            accepted_prediction_tokens: 0,
-            rejected_prediction_tokens: 0,
-          },
-        },
-        service_tier: 'default',
-        system_fingerprint: null,
-      };
+      // const response: any = {};
+      // response.data = {
+      //   id: 'chatcmpl-CfVgjLYMX3CHZcKNsupj595S3k2r1',
+      //   object: 'chat.completion',
+      //   created: 1764009293,
+      //   model: 'gpt-5-2025-08-07',
+      //   choices: [
+      //     {
+      //       index: 0,
+      //       message: {
+      //         role: 'assistant',
+      //         content:
+      //           '{\n  "prompt": "8 seconds; UGC smartphone realism, 35mm-equivalent prime lens, shallow depth of field, 4K, 24fps. Subject + action: A fast, clean UGC unboxing-to-testimonial sequence showcasing SuperBelly Mango Passion Fruit as an easy daily gut-support drink. Aesthetic: bright natural daylight, lifestyle product demo with authentic testimonial energy, minimal props, no distracting clutter.\\nCamera movement: Scene 1 (0:00–0:01.5) slight upward pan from inside an open mango-yellow shipping box to a matte mango-yellow SuperBelly pouch; Scene 2 (0:01.5–0:03.5) static medium shot on woman in a bright kitchen, hard cut to tight detail of scoop; Scene 3 (0:03.5–0:05.5) static medium close-up on man speaking; Scene 4 (0:05.5–0:08.0) medium close-up on man holding a clear shaker, hard cut to overhead product flat lay.\\nPacing: fast and upbeat with snappy hard cuts on the musical beat; quick intro hook, direct benefit line, punchy CTA finish.\\nColors: mango-yellow and passionfruit purple accents, fresh greens, crisp white backgrounds, warm wood tones, natural skin tones. High contrast but soft shadows.\\nAudio: upbeat tropical pop bed (light marimba, claps, soft kick), medium intensity, rises slightly toward the end; subtle foley for the powder scoop; clean, intimate VO. No reverb.\\nText overlay: persistent top-left sans-serif, white with soft drop shadow: “Free Shaker Bottle + 5 Free Travel Sticks.” Keep size readable on mobile; animate in subtly at 0:00 and gently scale up 5% at the CTA.\\nDialogue (timed to scenes):\\n- Scene 1 (0:00–0:01.5, female VO over unboxing): “Remembering to take all of my supplements is a lot sometimes.”\\n- Scene 2 (0:01.5–0:03.5, female VO over medium shot and scoop close-up): “And this is so much more than just a mango passion fruit drink—it’s packed with prebiotics, probiotics, and belly-loving fiber.”\\n- Scene 3 (0:03.5–0:05.5, male on-camera): “It’s helped my gut health, regularity, and daily energy—and I’ve noticed way less bloating.”\\n- Scene 4 (0:05.5–0:08.0, male VO on shaker and flat lay): “Order SuperBelly Mango Passion Fruit now and get a free shaker bottle and five free travel sticks.”\\nVisual direction by scene:\\n- Scene 1 Hook (0:00–0:01.5): Medium close-up; hand with rings gently lifts a large matte mango-yellow SuperBelly pouch from a custom-fit mango-yellow box lined with tropical leaf print. Clear white “SuperBelly” wordmark, flavor copy “Mango Passion Fruit,” and small icons: Prebiotic • Probiotic • Fiber. Bright, even daylight; soft shadows. No VFX.\\n- Scene 2 Solution (0:01.5–0:03.5): Medium shot; smiling woman in white tee and jeans, slight three-quarter angle in a sunlit minimalist kitchen, holding a clear shaker with a golden-mango drink (tiny bubbles, condensation). Hard cut to close-up of a mango-colored scoop pulling sunny-yellow powder from a brushed-metal canister; a soft “scoop” foley. Subtle logo visible on shaker.\\n- Scene 3 Benefits (0:03.5–0:05.5): Medium close-up; bearded man with glasses and cap, blue hoodie over green tee, holding the SuperBelly pouch at chest level, gesturing with animated excitement. Bright, soft, even lighting with gentle shadow for depth. Clean white patterned wall behind.\\n- Scene 4 CTA (0:05.5–0:08.0): Medium close-up; same man now holds a clear BPA-free shaker with SuperBelly logo toward camera, smiles. Hard cut to overhead flat lay: five mango-yellow SuperBelly travel sticks fanned neatly on warm walnut wood beside the pouch and shaker. The overlay text subtly scales up. Music hits a feel-good flourish on the last beat.\\nEnd with: CTA visual and audio: freeze on the overhead flat lay of the five travel sticks, pouch, and shaker with the overlay “Free Shaker Bottle + 5 Free Travel Sticks” and a small URL/tag @SuperBelly in bottom-right; music button resolves on the final word of the CTA VO."\n}',
+      //         refusal: null,
+      //         annotations: [],
+      //       },
+      //       finish_reason: 'stop',
+      //     },
+      //   ],
+      //   usage: {
+      //     prompt_tokens: 1667,
+      //     completion_tokens: 3562,
+      //     total_tokens: 5229,
+      //     prompt_tokens_details: { cached_tokens: 0, audio_tokens: 0 },
+      //     completion_tokens_details: {
+      //       reasoning_tokens: 2560,
+      //       audio_tokens: 0,
+      //       accepted_prediction_tokens: 0,
+      //       rejected_prediction_tokens: 0,
+      //     },
+      //   },
+      //   service_tier: 'default',
+      //   system_fingerprint: null,
+      // };
+
       console.log('GPT-5 response:', JSON.stringify(response.data));
 
       const generatedText =

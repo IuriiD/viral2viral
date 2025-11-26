@@ -258,27 +258,30 @@ export class GenerationService {
 
       this.logger.log('Calling laozhang.ai Sora 2 API...');
 
-      // const response = await axios.post(
-      //   `${this.laozhangBaseUrl}/chat/completions`,
-      //   requestPayload,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${this.laozhangApiKey}`,
-      //       'Content-Type': 'application/json',
-      //     },
-      //     timeout: 600000, // 10 minutes timeout for video generation
-      //   },
-      // );
+      // PROD
+      const response = await axios.post(
+        `${this.laozhangBaseUrl}/chat/completions`,
+        requestPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${this.laozhangApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 600000, // 10 minutes timeout for video generation
+        },
+      );
 
-      // // Extract video URL from response
-      // if (!response.data.choices || response.data.choices.length === 0) {
-      //   throw new Error('No response choices received from Sora 2 API');
-      // }
+      // Extract video URL from response
+      if (!response.data.choices || response.data.choices.length === 0) {
+        throw new Error('No response choices received from Sora 2 API');
+      }
 
-      // const content = response.data.choices[0].message.content;
-      // const videoUrl = this.extractVideoUrl(content);
-      const videoUrl =
-        'https://mycnd-hz.oss-cn-hangzhou.aliyuncs.com/sora/459bd9cb-cd9f-4295-8bac-fcfb764b4b5e.mp4';
+      const content = response.data.choices[0].message.content;
+      const videoUrl = this.extractVideoUrl(content);
+
+      // DEBUG: Using a placeholder video URL for now
+      // const videoUrl =
+      //   'https://mycnd-hz.oss-cn-hangzhou.aliyuncs.com/sora/459bd9cb-cd9f-4295-8bac-fcfb764b4b5e.mp4';
 
       if (!videoUrl) {
         throw new Error('No video URL found in API response');
