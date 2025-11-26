@@ -1,0 +1,958 @@
+openapi: 3.0.3
+info:
+  title: Viral2Viral - UGC Video Cloner API
+  description: |
+    API for generating advertisement videos based on UGC (User Generated Content) analysis.
+    
+    ## Workflow
+    1. Create session
+    2. Upload source video to S3
+    3. Trigger video analysis (Gemini AI)
+    4. Submit product information
+    5. Upload product image to S3
+    6. Generate video prompt (GPT-5)
+    7. Generate video (Sora 2)
+    8. Download generated video
+    
+    This is a stateless POC - session data is held in memory only.
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+  - url: https://api.example.com
+    description: Production server
+
+tags:
+  - name: Session
+    description: Session management operations
+  - name: Video
+    description: Video upload and management
+  - name: Analysis
+    description: Video analysis operations
+  - name: Product
+    description: Product information management
+  - name: Prompt
+    description: Video prompt generation and editing
+  - name: Generation
+    description: Video generation operations
+
+paths:
+  /sessions:
+    post:
+      tags:
+        - Session
+      summary: Create a new session
+      description: Initialize a new workflow session. Returns a unique session ID.
+      operationId: createSession
+      responses:
+        '201':
+          description: Session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSessionResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sessions/{sessionId}:
+    get:
+      tags:
+        - Session
+      summary: Get session details
+      description: Retrieve complete session state including all workflow data
+      operationId: getSession
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Session retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSessionResponse'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sessions/{sessionId}/video/upload-url:
+    post:
+      tags:
+        - Video
+      summary: Get presigned upload URL for video
+      description: Generate a presigned S3 POST URL for uploading source video directly from browser
+      operationId: getVideoUploadUrl
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadVideoRequest'
+      responses:
+        '200':
+          description: Presigned URL generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadVideoResponse'
+        '400':
+          description: Invalid request (file too large, invalid format)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sessions/{sessionId}/analysis:
+    post:
+      tags:
+        - Analysis
+      summary: Trigger video analysis
+      description: Start AI analysis of uploaded video using Google Gemini
+      operationId: triggerAnalysis
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '202':
+          description: Analysis started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TriggerAnalysisResponse'
+        '400':
+          description: Video not uploaded yet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags:
+        - Analysis
+      summary: Get analysis results
+      description: Retrieve video analysis results (includes status polling)
+      operationId: getAnalysis
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Analysis results retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAnalysisResponse'
+        '404':
+          description: Analysis not started or session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    patch:
+      tags:
+        - Analysis
+      summary: Update analysis text
+      description: Save user's edited version of the analysis results
+      operationId: updateAnalysis
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAnalysisRequest'
+      responses:
+        '200':
+          description: Analysis updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateAnalysisResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sessions/{sessionId}/product:
+    post:
+      tags:
+        - Product
+      summary: Submit product information
+      description: Submit product name and description
+      operationId: submitProductInfo
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitProductInfoRequest'
+      responses:
+        '200':
+          description: Product information saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitProductInfoResponse'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sessions/{sessionId}/product/image/upload-url:
+    post:
+      tags:
+        - Product
+      summary: Get presigned upload URL for product image
+      description: Generate a presigned S3 POST URL for uploading product image
+      operationId: getProductImageUploadUrl
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadProductImageRequest'
+      responses:
+        '200':
+          description: Presigned URL generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadProductImageResponse'
+        '400':
+          description: Invalid request (file too large, invalid format)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sessions/{sessionId}/prompt:
+    post:
+      tags:
+        - Prompt
+      summary: Generate video prompt
+      description: Generate text-to-video prompt using GPT-5 based on analysis and product info
+      operationId: generatePrompt
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Prompt generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneratePromptResponse'
+        '400':
+          description: Missing required data (analysis or product info)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    patch:
+      tags:
+        - Prompt
+      summary: Update prompt text
+      description: Save user's edited version of the generated prompt
+      operationId: updatePrompt
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePromptRequest'
+      responses:
+        '200':
+          description: Prompt updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdatePromptResponse'
+        '400':
+          description: Invalid input (too long, empty)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sessions/{sessionId}/prompt/approve:
+    post:
+      tags:
+        - Prompt
+      summary: Approve prompt for video generation
+      description: Mark prompt as approved and ready for video generation
+      operationId: approvePrompt
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Prompt approved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovePromptResponse'
+        '400':
+          description: Prompt not generated yet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /sessions/{sessionId}/generate:
+    post:
+      tags:
+        - Generation
+      summary: Generate video
+      description: Start video generation using Sora 2 with approved prompt and product image
+      operationId: generateVideo
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '202':
+          description: Video generation started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateVideoResponse'
+        '400':
+          description: Missing required data (prompt not approved or image not uploaded)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    get:
+      tags:
+        - Generation
+      summary: Get video generation status
+      description: Poll for video generation status and retrieve download URL when complete
+      operationId: getVideoStatus
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Generation status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetVideoStatusResponse'
+        '404':
+          description: Generation not started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /health:
+    get:
+      tags:
+        - System
+      summary: Health check
+      description: Check if API is running and responsive
+      operationId: healthCheck
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  timestamp:
+                    type: string
+                    format: date-time
+
+components:
+  parameters:
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      description: Unique session identifier (UUID)
+      schema:
+        type: string
+        format: uuid
+        example: 123e4567-e89b-12d3-a456-426614174000
+
+  schemas:
+    # Common response wrapper
+    ApiResponse:
+      type: object
+      required:
+        - success
+        - meta
+      properties:
+        success:
+          type: boolean
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+
+    ResponseMeta:
+      type: object
+      required:
+        - timestamp
+        - requestId
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        requestId:
+          type: string
+          format: uuid
+
+    ErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - error
+          properties:
+            error:
+              $ref: '#/components/schemas/ErrorDetail'
+
+    ErrorDetail:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: VIDEO_TOO_LARGE
+        message:
+          type: string
+          example: Video file exceeds maximum size of 100MB
+
+    # Session schemas
+    CreateSessionResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              type: object
+              required:
+                - sessionId
+                - status
+              properties:
+                sessionId:
+                  type: string
+                  format: uuid
+                status:
+                  type: string
+                  enum: [created]
+                createdAt:
+                  type: string
+                  format: date-time
+
+    GetSessionResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/Session'
+
+    Session:
+      type: object
+      required:
+        - sessionId
+        - status
+        - createdAt
+        - lastActivityAt
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [created, video_uploaded, analyzing, analysis_complete, product_info_added, prompt_generated, generating_video, video_complete, error]
+        createdAt:
+          type: string
+          format: date-time
+        lastActivityAt:
+          type: string
+          format: date-time
+        originalVideo:
+          $ref: '#/components/schemas/OriginalVideo'
+        videoAnalysis:
+          $ref: '#/components/schemas/VideoAnalysis'
+        productInformation:
+          $ref: '#/components/schemas/ProductInformation'
+        generationPrompt:
+          $ref: '#/components/schemas/GenerationPrompt'
+        generatedVideo:
+          $ref: '#/components/schemas/GeneratedVideo'
+
+    # Video schemas
+    UploadVideoRequest:
+      type: object
+      required:
+        - fileName
+        - fileSize
+        - mimeType
+      properties:
+        fileName:
+          type: string
+          example: my-video.mp4
+        fileSize:
+          type: integer
+          format: int64
+          maximum: 104857600
+          description: File size in bytes (max 100MB)
+          example: 52428800
+        mimeType:
+          type: string
+          enum: [video/mp4, video/quicktime, video/x-msvideo]
+          example: video/mp4
+
+    UploadVideoResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              type: object
+              required:
+                - uploadUrl
+                - uploadFields
+                - s3Key
+              properties:
+                uploadUrl:
+                  type: string
+                  format: uri
+                  description: S3 presigned POST URL
+                uploadFields:
+                  type: object
+                  additionalProperties:
+                    type: string
+                  description: Form fields to include in POST request
+                s3Key:
+                  type: string
+                  description: S3 key where file will be stored
+
+    OriginalVideo:
+      type: object
+      required:
+        - s3Key
+        - s3Bucket
+        - fileName
+        - fileSize
+        - mimeType
+        - uploadedAt
+      properties:
+        s3Key:
+          type: string
+        s3Bucket:
+          type: string
+        fileName:
+          type: string
+        fileSize:
+          type: integer
+          format: int64
+        mimeType:
+          type: string
+        uploadedAt:
+          type: string
+          format: date-time
+        duration:
+          type: number
+          format: float
+          description: Video duration in seconds
+        thumbnailS3Key:
+          type: string
+        downloadUrl:
+          type: string
+          format: uri
+          description: Presigned download URL (temporary)
+
+    # Analysis schemas
+    TriggerAnalysisResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              type: object
+              required:
+                - analysisId
+                - status
+              properties:
+                analysisId:
+                  type: string
+                  format: uuid
+                status:
+                  type: string
+                  enum: [pending, processing]
+
+    GetAnalysisResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/VideoAnalysis'
+
+    UpdateAnalysisRequest:
+      type: object
+      required:
+        - editedText
+      properties:
+        editedText:
+          type: string
+          maxLength: 10000
+          description: User's edited analysis text
+
+    UpdateAnalysisResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/VideoAnalysis'
+
+    VideoAnalysis:
+      type: object
+      required:
+        - analysisId
+        - analyzedAt
+        - status
+        - sceneBreakdown
+      properties:
+        analysisId:
+          type: string
+          format: uuid
+        analyzedAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [pending, processing, complete, failed]
+        sceneBreakdown:
+          type: string
+          description: Raw scene-by-scene breakdown
+        userEdits:
+          type: string
+          description: User's edited version
+        error:
+          $ref: '#/components/schemas/AnalysisError'
+
+    AnalysisError:
+      type: object
+      required:
+        - code
+        - message
+        - timestamp
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    # Product schemas
+    SubmitProductInfoRequest:
+      type: object
+      required:
+        - productName
+        - productDescription
+      properties:
+        productName:
+          type: string
+          minLength: 3
+          maxLength: 100
+          example: SuperBelly Nutrition Powder
+        productDescription:
+          type: string
+          minLength: 1
+          maxLength: 250
+          example: All-in-one daily nutrition supplement with probiotics and vitamins
+
+    SubmitProductInfoResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/ProductInformation'
+
+    UploadProductImageRequest:
+      type: object
+      required:
+        - fileName
+        - fileSize
+        - mimeType
+      properties:
+        fileName:
+          type: string
+          example: product.png
+        fileSize:
+          type: integer
+          format: int64
+          maximum: 10485760
+          description: File size in bytes (max 10MB)
+        mimeType:
+          type: string
+          enum: [image/png, image/jpeg, image/webp]
+
+    UploadProductImageResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              type: object
+              required:
+                - uploadUrl
+                - uploadFields
+                - s3Key
+              properties:
+                uploadUrl:
+                  type: string
+                  format: uri
+                uploadFields:
+                  type: object
+                  additionalProperties:
+                    type: string
+                s3Key:
+                  type: string
+
+    ProductInformation:
+      type: object
+      required:
+        - productName
+        - productDescription
+        - addedAt
+      properties:
+        productName:
+          type: string
+        productDescription:
+          type: string
+        productImageS3Key:
+          type: string
+        productImageMimeType:
+          type: string
+        addedAt:
+          type: string
+          format: date-time
+        downloadUrl:
+          type: string
+          format: uri
+
+    # Prompt schemas
+    GeneratePromptResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/GenerationPrompt'
+
+    UpdatePromptRequest:
+      type: object
+      required:
+        - editedText
+      properties:
+        editedText:
+          type: string
+          minLength: 1
+          maxLength: 500
+
+    UpdatePromptResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/GenerationPrompt'
+
+    ApprovePromptResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/GenerationPrompt'
+
+    GenerationPrompt:
+      type: object
+      required:
+        - promptId
+        - generatedText
+        - finalText
+        - characterCount
+        - generatedAt
+        - moderationStatus
+      properties:
+        promptId:
+          type: string
+          format: uuid
+        generatedText:
+          type: string
+          description: AI-generated prompt
+        userEditedText:
+          type: string
+          description: User's edited version
+        finalText:
+          type: string
+          description: Final approved text
+        characterCount:
+          type: integer
+        generatedAt:
+          type: string
+          format: date-time
+        approvedAt:
+          type: string
+          format: date-time
+        moderationStatus:
+          type: string
+          enum: [pending, approved, flagged, bypassed]
+        moderationFlags:
+          type: array
+          items:
+            type: string
+
+    # Generation schemas
+    GenerateVideoResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/GeneratedVideo'
+
+    GetVideoStatusResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: '#/components/schemas/GeneratedVideo'
+
+    GeneratedVideo:
+      type: object
+      required:
+        - generatedVideoId
+        - s3Key
+        - s3Bucket
+        - fileName
+        - mimeType
+        - status
+        - initiatedAt
+      properties:
+        generatedVideoId:
+          type: string
+          format: uuid
+        s3Key:
+          type: string
+        s3Bucket:
+          type: string
+        fileName:
+          type: string
+        fileSize:
+          type: integer
+          format: int64
+        mimeType:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, complete, failed]
+        initiatedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+        estimatedCompletionTime:
+          type: string
+          format: date-time
+        downloadUrl:
+          type: string
+          format: uri
+        error:
+          $ref: '#/components/schemas/GenerationError'
+
+    GenerationError:
+      type: object
+      required:
+        - code
+        - message
+        - timestamp
+        - retryable
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        retryable:
+          type: boolean
+
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authentication (optional for POC)
+
+# Security is optional for POC but documented for future use
+security: []

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+build/
+coverage/
+*.min.js
+backend/node_modules/
+frontend/node_modules/
+backend/dist/
+frontend/dist/
